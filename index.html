@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecánica de Fluidos - Calculadora Integral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, .serif-font { font-family: 'Merriweather', serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .input-group label { font-size: 0.7rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; display: block; }
+        
+        /* Improved Input Styling */
+        .input-wrapper { display: flex; width: 100%; align-items: stretch; }
+        .input-std { 
+            flex-grow: 1; min-width: 0;
+            padding: 0.5rem; font-size: 0.875rem; 
+            border: 1px solid #cbd5e1; border-radius: 0.375rem; 
+            transition: all 0.2s; background-color: #fff;
+        }
+        .input-std.has-badge { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: 0; }
+        .input-std:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); position: relative; z-index: 10; }
+        
+        .unit-badge {
+            background-color: #f1f5f9; border: 1px solid #cbd5e1; border-left: 0;
+            padding: 0 0.75rem; font-size: 0.75rem; color: #64748b; font-weight: 600;
+            border-top-right-radius: 0.375rem; border-bottom-right-radius: 0.375rem;
+            display: flex; align-items: center; justify-content: center; white-space: nowrap;
+        }
+        
+        .nav-btn { @apply w-full text-left px-5 py-3 border-l-4 border-transparent text-slate-600 hover:bg-slate-50 hover:text-blue-700 transition-all flex items-center gap-3; }
+        .nav-btn.active { @apply border-blue-600 bg-blue-50/50 text-blue-800 font-bold; }
+        
+        .biblio-item { @apply p-4 border-l-4 border-blue-500 bg-slate-50 rounded-r-lg mb-4; }
+
+        .result-card { animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Analysis Box Styles */
+        .analysis-box { @apply mt-4 p-4 rounded bg-slate-700 border border-slate-600 text-xs text-slate-300; }
+        .analysis-title { @apply font-bold text-blue-300 uppercase mb-2 flex items-center gap-2; }
+        .rec-tag { @apply inline-block px-2 py-1 rounded bg-slate-600 text-[10px] mr-2 mb-1 border border-slate-500; }
+        .price-tag { @apply font-mono font-bold text-yellow-400 ml-1; }
+        
+        /* Optimization Proposal Styles */
+        .opt-row { @apply flex justify-between items-center border-b border-slate-600 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0; }
+        .opt-label { @apply font-bold text-slate-200; }
+        .opt-val { @apply font-mono text-emerald-300; }
+        .opt-cost { @apply text-[10px] uppercase tracking-wide ml-2 px-1 rounded bg-slate-800 text-slate-400; }
+
+        /* Mobile Overlay Transition */
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+        .fade-enter, .fade-leave-to { opacity: 0; }
+
+        /* Canvas Styles */
+        .diagram-container { @apply w-full bg-white rounded-lg border border-slate-300 overflow-hidden mt-6 mb-4 relative; }
+        canvas { @apply w-full h-auto block; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="bg-slate-100 h-screen flex flex-col overflow-hidden">
+
+    <!-- Topbar -->
+    <nav class="bg-slate-900 text-white shadow-lg z-20 shrink-0 h-16 flex items-center justify-between px-4 md:px-6">
+        <div class="flex items-center gap-3">
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            
+            <div class="bg-blue-600 w-8 h-8 rounded flex items-center justify-center"><i class="fa-solid fa-water"></i></div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight text-slate-100 truncate w-48 md:w-auto">Mecánica de Fluidos</h1>
+                <p class="text-[10px] text-blue-300 uppercase tracking-wider hidden md:block">Herramienta de Diseño & Análisis</p>
+            </div>
+        </div>
+        <div class="text-xs text-slate-400 hidden md:block">
+            Profesor Ph.D. Juan Sandoval Herrera | 2025
+        </div>
+        <!-- Mobile right indicator -->
+        <div class="md:hidden text-xs text-slate-400">
+            <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Mobile Overlay -->
+        <div id="mobile-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0"></div>
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-200 flex flex-col shadow-2xl md:shadow-sm md:static transform -translate-x-full md:translate-x-0 transition-transform duration-300 h-full">
+            
+            <!-- Mobile Header in Sidebar -->
+            <div class="md:hidden p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <span class="font-bold text-slate-700">Menú</span>
+                <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto py-4">
+                <div class="px-5 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">General</div>
+                <button onclick="switchSection('home')" id="nav-home" class="nav-btn active">
+                    <i class="fa-solid fa-house w-5"></i> Inicio / Portada
+                </button>
+                <button onclick="switchSection('biblio')" id="nav-biblio" class="nav-btn">
+                    <i class="fa-solid fa-book w-5"></i> Bibliografía
+                </button>
+
+                <div class="px-5 mt-6 mb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Módulos de Cálculo</div>
+                <button onclick="switchSection('class1')" id="nav-class1" class="nav-btn">
+                    <i class="fa-solid fa-gauge-high w-5"></i> 
+                    <div>
+                        <div>Clase I</div>
+                        <div class="text-[10px] font-normal opacity-70">Potencia Bomba</div>
+                    </div>
+                </button>
+                <button onclick="switchSection('class2')" id="nav-class2" class="nav-btn">
+                    <i class="fa-solid fa-faucet-drip w-5"></i> 
+                    <div>
+                        <div>Clase II</div>
+                        <div class="text-[10px] font-normal opacity-70">Cálculo Caudal</div>
+                    </div>
+                </button>
+                <button onclick="switchSection('class3')" id="nav-class3" class="nav-btn">
+                    <i class="fa-solid fa-ruler-combined w-5"></i> 
+                    <div>
+                        <div>Clase III</div>
+                        <div class="text-[10px] font-normal opacity-70">Diseño Diámetro</div>
+                    </div>
+                </button>
+                <button onclick="switchSection('npsh')" id="nav-npsh" class="nav-btn">
+                    <i class="fa-solid fa-temperature-arrow-up w-5"></i>
+                    <div>
+                        <div>NPSH Disp.</div>
+                        <div class="text-[10px] font-normal opacity-70">Análisis de Cavitación</div>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Global Fluid Settings -->
+            <div class="p-5 bg-slate-50 border-t border-slate-200">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-3"><i class="fa-solid fa-flask mr-1"></i> Propiedades Fluido</h4>
+                <div class="space-y-3">
+                    <div class="input-group">
+                        <label>Selección</label>
+                        <select id="fluid-preset" onchange="loadFluid()" class="input-std text-xs w-full">
+                            <option value="water20">Agua (20°C)</option>
+                            <option value="water80">Agua (80°C)</option>
+                            <option value="file_fluid" selected>Fluido Archivo (Gasolina/HC)</option>
+                            <option value="oil">Aceite SAE 30</option>
+                            <option value="custom">Personalizado</option>
+                        </select>
+                    </div>
+                    
+                    <div id="custom-name-container" class="hidden">
+                        <label class="text-[9px] text-blue-600 font-bold uppercase mb-1">Nombre del Fluido</label>
+                        <input type="text" id="fluid-name-input" placeholder="Ej: Etanol" class="input-std text-xs w-full border-blue-300">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[9px] text-slate-500 font-bold block">Densidad (kg/m³)</label>
+                            <input type="number" id="rho" value="674" class="input-std text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-slate-500 font-bold block">Viscosidad (Pa·s)</label>
+                            <input type="number" id="mu" value="0.00003" step="1e-6" class="input-std text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-slate-500 font-bold block">P. Vapor (kPa)</label>
+                            <input type="number" id="pv" value="62.1" step="0.01" class="input-std text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-slate-500 font-bold block">P. Atm (kPa)</label>
+                            <input type="number" id="patm" value="100.5" step="0.1" class="input-std text-xs">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-hidden relative bg-slate-100 w-full">
+            
+            <!-- SECTION: HOME / PORTADA -->
+            <section id="sec-home" class="content-section h-full overflow-y-auto p-4 md:p-8 flex flex-col items-center justify-center text-center bg-gradient-to-br from-slate-100 to-white">
+                 <div class="max-w-5xl w-full">
+                    <div class="mb-4 text-blue-600 opacity-20"><i class="fa-solid fa-water text-6xl"></i></div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">Mecánica de Fluidos</h1>
+                    <div class="h-1 w-24 bg-blue-500 mx-auto mb-6"></div>
+                    
+                    <div class="mb-8">
+                        <p class="text-lg md:text-xl text-slate-600 serif-font italic mb-1">Profesor Ph.D. Juan Sandoval Herrera</p>
+                        <p class="text-slate-400 font-bold tracking-widest text-sm">2025</p>
+                    </div>
+
+                    <div class="mb-10 rounded-xl overflow-hidden shadow-2xl border-4 border-white mx-auto max-w-xl transform hover:scale-[1.02] transition duration-500">
+                        <img src="https://github.com/Juansanher25/tuberiasybombas/blob/main/istockphoto-1353917402-612x612.jpg?raw=true" alt="Diagrama de Tuberías Industrial" class="w-full h-auto object-cover">
+                        <div class="bg-slate-900 text-slate-300 text-[10px] p-2 text-right">Esquema de Referencia: Sistemas en Serie</div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+                        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition cursor-pointer group" onclick="switchSection('class1')">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-blue-100 text-blue-600 p-2 rounded"><i class="fa-solid fa-gauge-high"></i></div>
+                                <h3 class="font-bold text-slate-700 text-sm">Clase I</h3>
+                            </div>
+                            <p class="text-[10px] text-slate-500">Potencia de Bomba</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition cursor-pointer group" onclick="switchSection('class2')">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-indigo-100 text-indigo-600 p-2 rounded"><i class="fa-solid fa-faucet-drip"></i></div>
+                                <h3 class="font-bold text-slate-700 text-sm">Clase II</h3>
+                            </div>
+                            <p class="text-[10px] text-slate-500">Cálculo de Caudal</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition cursor-pointer group" onclick="switchSection('class3')">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-emerald-100 text-emerald-600 p-2 rounded"><i class="fa-solid fa-ruler-combined"></i></div>
+                                <h3 class="font-bold text-slate-700 text-sm">Clase III</h3>
+                            </div>
+                            <p class="text-[10px] text-slate-500">Diseño Diámetro</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition cursor-pointer group" onclick="switchSection('npsh')">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-orange-100 text-orange-600 p-2 rounded"><i class="fa-solid fa-temperature-arrow-up"></i></div>
+                                <h3 class="font-bold text-slate-700 text-sm">NPSH</h3>
+                            </div>
+                            <p class="text-[10px] text-slate-500">Análisis Cavitación</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: BIBLIOGRAFIA -->
+            <section id="sec-biblio" class="content-section h-full overflow-y-auto p-4 md:p-10 hidden">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-8 border-b pb-4">Referencias Bibliográficas</h2>
+                    <div class="biblio-item">
+                        <p class="font-bold text-slate-800 text-lg mb-1 serif-font">Texto Guía Institucional</p>
+                        <p class="text-slate-600">Sandoval, J. (Ed.). (2018). <em>Mecánica de fluidos</em>. Serie apuntes de clase. Publicaciones Universidad de América.</p>
+                        <a href="https://doi.org/10.29097/9789588517360" target="_blank" class="text-blue-500 text-sm hover:underline mt-2 inline-block">https://doi.org/10.29097/9789588517360</a>
+                    </div>
+                    <div class="biblio-item border-l-slate-400">
+                        <p class="font-bold text-slate-800 text-lg mb-1 serif-font">Mecánica de Fluidos Aplicada</p>
+                        <p class="text-slate-600">Mott, R. L., & Untener, J. A. (2015). <em>Applied Fluid Mechanics</em> (7th ed.). Pearson Education.</p>
+                    </div>
+                    <div class="biblio-item border-l-slate-400">
+                        <p class="font-bold text-slate-800 text-lg mb-1 serif-font">Manual Técnico de Ingeniería</p>
+                        <p class="text-slate-600">Crane Co. (1988). <em>Flow of Fluids Through Valves, Fittings, and Pipe</em> (Technical Paper No. 410).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: CALCULATOR CLASS I -->
+            <section id="sec-class1" class="content-section h-full hidden flex flex-col">
+                <div class="flex-1 overflow-y-auto p-4 md:p-10 w-full max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Clase I: Cálculo de Potencia</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-slate-700 mb-5 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-gauge text-blue-500"></i> Condiciones de Operación</h3>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div class="input-group col-span-2"><label>Caudal (Q)</label><div class="input-wrapper"><input type="number" id="c1-q" value="0.05" class="input-std has-badge"><span class="unit-badge">m³/s</span></div></div>
+                                <div class="input-group"><label>P. Entrada (p1)</label><div class="input-wrapper"><input type="number" id="c1-p1" value="0" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group"><label>P. Salida (p2)</label><div class="input-wrapper"><input type="number" id="c1-p2" value="400" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group"><label>Z1</label><div class="input-wrapper"><input type="number" id="c1-z1" value="0" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group"><label>Z2</label><div class="input-wrapper"><input type="number" id="c1-z2" value="20" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group col-span-2"><label>Eficiencia (%)</label><div class="input-wrapper"><input type="number" id="c1-eff" value="75" class="input-std has-badge"><span class="unit-badge">%</span></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                            <div class="flex border-b border-slate-200 bg-slate-50">
+                                <button onclick="setPipeTab('suction')" id="btn-pipe-suction" class="flex-1 py-3 text-xs font-bold text-blue-700 border-b-2 border-blue-600 bg-white uppercase tracking-wider">Succión</button>
+                                <button onclick="setPipeTab('discharge')" id="btn-pipe-discharge" class="flex-1 py-3 text-xs font-bold text-slate-500 border-b-2 border-transparent uppercase tracking-wider">Descarga</button>
+                            </div>
+                            <div id="pipe-suction" class="p-6 space-y-5 flex-1">
+                                <div class="grid grid-cols-2 gap-5">
+                                    <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c1-l-suc" value="5" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                    <div class="input-group col-span-2"><label>Material</label><select id="c1-mat-suc" class="input-std w-full"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option></select></div>
+                                    <div class="input-group col-span-2">
+                                        <div class="flex gap-2">
+                                            <div class="flex-1">
+                                                <label class="text-blue-600">DN (Acero Sch 40)</label>
+                                                <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c1-d-suc')">
+                                                    <option value="-">- Manual -</option>
+                                                </select>
+                                            </div>
+                                            <div class="flex-1">
+                                                <label>Diámetro Real (D)</label>
+                                                <div class="input-wrapper"><input type="number" id="c1-d-suc" value="0.10" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-t pt-4">
+                                    <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-suc-list')" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
+                                    <div id="c1-acc-suc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                                </div>
+                            </div>
+                            <div id="pipe-discharge" class="p-6 space-y-5 hidden flex-1">
+                                <div class="grid grid-cols-2 gap-5">
+                                    <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c1-l-dis" value="50" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                    <div class="input-group col-span-2"><label>Material</label><select id="c1-mat-dis" class="input-std w-full"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option></select></div>
+                                    <div class="input-group col-span-2">
+                                        <div class="flex gap-2">
+                                            <div class="flex-1">
+                                                <label class="text-blue-600">DN (Acero Sch 40)</label>
+                                                <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c1-d-dis')">
+                                                    <option value="-">- Manual -</option>
+                                                </select>
+                                            </div>
+                                            <div class="flex-1">
+                                                <label>Diámetro Real (D)</label>
+                                                <div class="input-wrapper"><input type="number" id="c1-d-dis" value="0.08" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="border-t pt-4">
+                                    <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-dis-list')" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
+                                    <div id="c1-acc-dis-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-[0.99] text-lg mb-8">CALCULAR POTENCIA</button>
+                    <div id="res-box-class1" class="hidden result-card bg-slate-800 text-slate-100 rounded-xl shadow-2xl p-6 md:p-8 border border-slate-700">
+                        <div class="flex justify-between items-start mb-6"><div><h3 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-1">Resultados</h3><div class="text-2xl font-serif text-white result-fluid-name">---</div></div><div class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded text-xs font-mono">Clase I</div></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-slate-900/50 p-6 rounded-lg border border-slate-700 text-center"><div class="text-xs text-slate-400 uppercase font-bold mb-2">Potencia del Motor</div><div id="res-c1-main" class="text-4xl font-mono font-bold text-white mb-1">---</div><div id="res-c1-sub" class="text-sm text-green-400 font-bold">---</div></div>
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Carga Bomba (hA)</span><span class="text-white" id="res-c1-ha">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Pérd. Succión</span><span class="text-red-300" id="res-c1-hls">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Pérd. Descarga</span><span class="text-red-300" id="res-c1-hld">---</span></div>
+                                <div class="flex justify-between pt-1"><span class="text-slate-400">Carga Estática</span><span class="text-slate-300" id="res-c1-static">---</span></div>
+                            </div>
+                        </div>
+                        
+                        <!-- DIAGRAM CANVAS FOR CLASS I -->
+                        <div class="diagram-container">
+                             <div class="absolute top-2 left-2 text-[10px] text-slate-500 font-bold uppercase bg-white/80 px-2 py-1 rounded border border-slate-200 z-10">Diagrama Esquemático del Sistema</div>
+                             <canvas id="canvas-class1" width="800" height="300"></canvas>
+                        </div>
+                        
+                        <div id="c1-analysis" class="analysis-box hidden"></div>
+                    </div>
+                    <div id="err-box-class1" class="hidden mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-sm"><p class="font-bold">Error</p><p id="err-msg-class1">---</p></div>
+                </div>
+            </section>
+
+            <!-- SECTION: CALCULATOR CLASS II -->
+            <section id="sec-class2" class="content-section h-full hidden flex flex-col">
+                <div class="flex-1 overflow-y-auto p-4 md:p-10 w-full max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Clase II: Cálculo de Caudal</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100 shadow-sm">
+                            <h3 class="font-bold text-indigo-800 mb-5 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-bolt"></i> Energía Disponible</h3>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div class="input-group"><label>P. Entrada</label><div class="input-wrapper"><input type="number" id="c2-p1" value="600" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group"><label>Z1</label><div class="input-wrapper"><input type="number" id="c2-z1" value="5" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group"><label>P. Salida</label><div class="input-wrapper"><input type="number" id="c2-p2" value="500" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group"><label>Z2</label><div class="input-wrapper"><input type="number" id="c2-z2" value="0" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="col-span-2 pt-4 border-t border-indigo-200">
+                                    <div class="flex items-center gap-2 mb-3"><input type="checkbox" id="c2-has-pump" onchange="togglePumpInput()" class="w-5 h-5 text-indigo-600 rounded"><label for="c2-has-pump" class="text-indigo-900 text-sm font-bold">Incluir Bomba</label></div>
+                                    <div id="c2-pump-container" class="hidden input-group mb-4"><label>Cabeza Bomba</label><div class="input-wrapper"><input type="number" id="c2-pump-head" value="0" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                </div>
+                                <div class="col-span-2 bg-white p-4 rounded-lg border border-indigo-200 text-center"><div class="text-xs text-gray-500 uppercase font-bold mb-1">Energía Disp. (hL)</div><div class="text-2xl font-mono font-bold text-indigo-700" id="c2-total-energy">--- m</div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase border-b pb-2">Tubería</h4>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c2-l" value="100" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group col-span-2"><label>Material</label><div class="relative w-full"><select id="c2-mat" class="input-std w-full appearance-none pr-8"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option><option value="2.4e-4">Hierro Galvanizado</option></select><div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div></div></div>
+                                <div class="input-group col-span-2">
+                                    <div class="flex gap-2">
+                                        <div class="flex-1">
+                                            <label class="text-indigo-600">DN (Acero Sch 40)</label>
+                                            <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c2-d')">
+                                                <option value="-">- Manual -</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex-1">
+                                            <label>Diámetro Real (D)</label>
+                                            <div class="input-wrapper"><input type="number" id="c2-d" value="0.15" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-100 pt-4">
+                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c2-acc-list')" class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-1 rounded font-bold hover:bg-indigo-200 transition">+ Agregar</button></div>
+                                <div id="c2-acc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="calculate()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-[0.99] text-lg mb-8">CALCULAR CAUDAL</button>
+                    <div id="res-box-class2" class="hidden result-card bg-slate-800 text-slate-100 rounded-xl shadow-2xl p-6 md:p-8 border border-slate-700">
+                        <div class="flex justify-between items-start mb-6"><div><h3 class="text-indigo-400 font-bold uppercase tracking-widest text-xs mb-1">Resultados</h3><div class="text-2xl font-serif text-white result-fluid-name">---</div></div><div class="bg-indigo-600/20 text-indigo-300 px-3 py-1 rounded text-xs font-mono">Clase II</div></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-slate-900/50 p-6 rounded-lg border border-slate-700 text-center flex flex-col justify-center">
+                                <div class="text-xs text-slate-400 uppercase font-bold mb-3">Caudal Máximo</div>
+                                <div id="res-c2-main" class="text-4xl font-mono font-bold text-white mb-2">---</div>
+                                <div class="flex justify-center gap-4 text-xs font-mono text-indigo-300 border-t border-slate-700 pt-3 mt-1"><span id="res-c2-m3h">---</span><span class="text-slate-500">|</span><span id="res-c2-lmin" class="font-bold text-green-400">---</span></div>
+                            </div>
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Energía Disp. (hL)</span><span class="text-white" id="res-c2-hl">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Velocidad</span><span class="text-white" id="res-c2-v">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Factor Fricción (f)</span><span class="text-yellow-400" id="res-c2-f">---</span></div>
+                                <div class="flex justify-between pt-1"><span class="text-slate-400">Iteraciones</span><span class="text-slate-500" id="res-c2-iter">---</span></div>
+                            </div>
+                        </div>
+                        <div id="c2-analysis" class="analysis-box hidden"></div>
+                    </div>
+                    <div id="err-box-class2" class="hidden mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-sm"><p class="font-bold">Error</p><p id="err-msg-class2">---</p></div>
+                </div>
+            </section>
+
+             <!-- SECTION: CALCULATOR CLASS III -->
+             <section id="sec-class3" class="content-section h-full hidden flex flex-col">
+                <div class="flex-1 overflow-y-auto p-4 md:p-10 w-full max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Clase III: Diseño de Diámetro</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 shadow-sm">
+                            <h3 class="font-bold text-emerald-800 mb-5 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-crosshairs"></i> Requerimientos</h3>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div class="input-group col-span-2"><label>Caudal (Q)</label><div class="input-wrapper"><input type="number" id="c3-q" value="0.06" class="input-std has-badge"><span class="unit-badge">m³/s</span></div></div>
+                                <div class="col-span-2 pt-4 border-t border-emerald-200">
+                                    <h5 class="text-[10px] font-bold text-emerald-700 mb-3 uppercase tracking-wide">Delta Presión/Elevación</h5>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="input-group"><label>P1</label><div class="input-wrapper"><input type="number" id="c3-p1" value="150" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                        <div class="input-group"><label>Z1</label><div class="input-wrapper"><input type="number" id="c3-z1" value="0" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                        <div class="input-group"><label>P2</label><div class="input-wrapper"><input type="number" id="c3-p2" value="0" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                        <div class="input-group"><label>Z2</label><div class="input-wrapper"><input type="number" id="c3-z2" value="0" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                    </div>
+                                    <div class="mt-4 bg-white p-3 rounded border border-emerald-200 text-center">
+                                        <label class="block text-[10px] uppercase text-gray-400 font-bold mb-1">Pérdida Permitida (hL)</label>
+                                        <div class="text-2xl font-mono font-bold text-emerald-600" id="c3-hl-disp">--- m</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase border-b pb-2">Parámetros de Tubería</h4>
+                            <div class="grid grid-cols-1 gap-5">
+                                <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c3-l" value="30" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group"><label>Estándar</label><div class="relative w-full"><select id="c3-std-type" class="input-std w-full appearance-none pr-8"><option value="s40" selected>Acero Cédula 40 ($$)</option><option value="s80">Acero Cédula 80 ($$$)</option><option value="copperK">Cobre Tipo K ($$$)</option><option value="none">Sólo Teórico</option></select><div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div></div></div>
+                                <div class="input-group"><label>Rugosidad (ε)</label><div class="input-wrapper"><input type="number" id="c3-eps" value="1.5e-6" step="1e-6" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                            </div>
+                            <!-- SECCIÓN DE ACCESORIOS -->
+                            <div class="border-t border-slate-100 pt-4">
+                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c3-acc-list')" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold hover:bg-emerald-200 transition">+ Agregar</button></div>
+                                <div id="c3-acc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="calculate()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-[0.99] text-lg mb-8">CALCULAR DIÁMETRO</button>
+
+                    <div id="res-box-class3" class="hidden result-card bg-slate-800 text-slate-100 rounded-xl shadow-2xl p-6 md:p-8 border border-slate-700">
+                        <div class="flex justify-between items-start mb-6"><div><h3 class="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-1">Resultados</h3><div class="text-2xl font-serif text-white result-fluid-name">---</div></div><div class="bg-emerald-600/20 text-emerald-300 px-3 py-1 rounded text-xs font-mono">Clase III</div></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-slate-900/50 p-6 rounded-lg border border-slate-700">
+                                <div class="text-center mb-4"><div class="text-xs text-slate-400 uppercase font-bold mb-2">Diámetro Teórico Mínimo</div><div id="res-c3-main" class="text-4xl font-mono font-bold text-white mb-1">---</div><div id="res-c3-sub" class="text-sm text-emerald-400 font-bold">---</div></div>
+                                <div id="rec-pipe-box" class="hidden mt-4 pt-4 border-t border-slate-700"><h5 class="text-emerald-400 text-[10px] font-bold uppercase mb-2">Recomendación Comercial</h5><div id="rec-pipe-content" class="text-sm space-y-1"></div></div>
+                            </div>
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">hL Permitida</span><span class="text-white" id="res-c3-hl">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Caudal (Q)</span><span class="text-white" id="res-c3-q">---</span></div>
+                                <div class="flex justify-between pt-1"><span class="text-slate-400">¿Estándar encontrado?</span><span class="text-white" id="res-c3-std-found">---</span></div>
+                            </div>
+                        </div>
+                        <div id="c3-analysis" class="analysis-box hidden"></div>
+                    </div>
+                    <div id="err-box-class3" class="hidden mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-sm"><p class="font-bold">Error</p><p id="err-msg-class3">---</p></div>
+                </div>
+            </section>
+
+             <!-- SECTION: CALCULATOR NPSH -->
+             <section id="sec-npsh" class="content-section h-full hidden flex flex-col">
+                <div class="flex-1 overflow-y-auto p-4 md:p-10 w-full max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">NPSH Disponible (NPSHa)</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-orange-50 p-6 rounded-xl border border-orange-100 shadow-sm">
+                            <h3 class="font-bold text-orange-800 mb-5 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-cloud-arrow-down"></i> Datos de la Bomba</h3>
+                            <div class="grid grid-cols-2 gap-5 mb-4 border-b border-orange-200 pb-4">
+                                <div class="input-group col-span-2"><label>NPSH Requerido (NPSHr)</label><div class="input-wrapper"><input type="number" id="npsh-req" value="3.5" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group col-span-2"><label>Margen de Seguridad</label>
+                                    <select id="npsh-safety" class="input-std w-full text-xs">
+                                        <option value="1.1" selected>Estándar (1.1 - 10%)</option>
+                                        <option value="1.3">Fluidos Volátiles (1.3 - 30%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <h3 class="font-bold text-orange-800 mb-3 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-database"></i> Sistema</h3>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div class="input-group"><label>Presión Tanque (Man)</label><div class="input-wrapper"><input type="number" id="npsh-p1" value="0" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group"><label>Altura Tanque (Za)</label><div class="input-wrapper"><input type="number" id="npsh-za" value="1.46" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group"><label>Altura Bomba (Zb)</label><div class="input-wrapper"><input type="number" id="npsh-zb" value="0" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group"><label>Caudal (Q)</label><div class="input-wrapper"><input type="number" id="npsh-q" value="0.01" class="input-std has-badge"><span class="unit-badge">m³/s</span></div></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase border-b pb-2">Línea de Succión</h4>
+                            <div class="grid grid-cols-2 gap-5">
+                                <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="npsh-l" value="4" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group col-span-2"><label>Material</label><div class="relative w-full"><select id="npsh-mat" class="input-std w-full appearance-none pr-8"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option></select><div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div></div></div>
+                                <div class="input-group col-span-2">
+                                    <div class="flex gap-2">
+                                        <div class="flex-1">
+                                            <label class="text-orange-600">DN (Acero Sch 40)</label>
+                                            <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'npsh-d')">
+                                                <option value="-">- Manual -</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex-1">
+                                            <label>Diámetro Real (D)</label>
+                                            <div class="input-wrapper"><input type="number" id="npsh-d" value="0.15" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-100 pt-4">
+                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('npsh-acc-list')" class="text-[10px] bg-orange-100 text-orange-700 px-2 py-1 rounded font-bold hover:bg-orange-200 transition">+ Agregar</button></div>
+                                <div id="npsh-acc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="calculate()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-[0.99] text-lg mb-8">CALCULAR Y OPTIMIZAR NPSHa</button>
+
+                    <div id="res-box-npsh" class="hidden result-card bg-slate-800 text-slate-100 rounded-xl shadow-2xl p-6 md:p-8 border border-slate-700">
+                        <div class="flex justify-between items-start mb-6"><div><h3 class="text-orange-400 font-bold uppercase tracking-widest text-xs mb-1">Resultados</h3><div class="text-2xl font-serif text-white result-fluid-name">---</div></div><div class="bg-orange-600/20 text-orange-300 px-3 py-1 rounded text-xs font-mono">NPSHa</div></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-slate-900/50 p-6 rounded-lg border border-slate-700 flex flex-col justify-center">
+                                <div class="text-center">
+                                    <div class="text-xs text-slate-400 uppercase font-bold mb-2">NPSH Disponible</div>
+                                    <div id="res-npsh-main" class="text-5xl font-mono font-bold text-white mb-2">---</div>
+                                    <div id="npsh-status" class="text-sm font-bold uppercase tracking-wide">---</div>
+                                    <div id="npsh-target-label" class="text-[10px] text-slate-400 mt-2">Objetivo (NPSHr x Factor): <span id="npsh-target-val" class="text-white font-mono">---</span></div>
+                                </div>
+                            </div>
+                            <div class="space-y-3 font-mono text-sm">
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Presión Atm (m)</span><span class="text-white" id="res-npsh-hatm">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Carga Estática (Z)</span><span class="text-white" id="res-npsh-z">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Pérdidas Succión</span><span class="text-red-400" id="res-npsh-hl">---</span></div>
+                                <div class="flex justify-between pt-1"><span class="text-slate-400">Presión Vapor (m)</span><span class="text-yellow-400" id="res-npsh-hvp">---</span></div>
+                            </div>
+                        </div>
+                        
+                        <!-- DIAGRAM CANVAS FOR NPSH -->
+                        <div class="diagram-container">
+                             <div class="absolute top-2 left-2 text-[10px] text-slate-500 font-bold uppercase bg-white/80 px-2 py-1 rounded border border-slate-200 z-10">Esquema Succión</div>
+                             <canvas id="canvas-npsh" width="800" height="300"></canvas>
+                        </div>
+                        
+                        <div id="npsh-opt-panel" class="hidden mt-6 bg-slate-700/50 p-4 rounded-lg border border-orange-500/30">
+                            <h4 class="text-xs font-bold text-orange-300 uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-wrench"></i> Propuestas de Optimización</h4>
+                            <div id="npsh-proposals" class="space-y-3 text-xs"></div>
+                        </div>
+                    </div>
+                    <div id="err-box-npsh" class="hidden mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-sm"><p class="font-bold">Error</p><p id="err-msg-npsh">---</p></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- LOGIC ---
+        let currentSection = 'home';
+        let isMobileMenuOpen = false;
+
+        // --- DATA ---
+        // Added Vapor Pressure (pv) in kPa
+        const fluids = {
+            'water20': { rho: 998, mu: 1.002e-3, pv: 2.34 },
+            'water80': { rho: 971, mu: 0.355e-3, pv: 47.4 },
+            'oil': { rho: 890, mu: 0.29, pv: 0.1 },
+            'file_fluid': { rho: 674, mu: 3e-5, pv: 62.1 } 
+        };
+        const accessoriesDB = [
+            { name: "Codo 90° Estándar", k: 0.9 },
+            { name: "Codo 90° Largo", k: 0.6 },
+            { name: "Codo 45°", k: 0.4 },
+            { name: "Tee (Directo)", k: 0.2 },
+            { name: "Tee (Ramal)", k: 1.8 },
+            { name: "Válv. Compuerta", k: 0.19 },
+            { name: "Válv. Globo", k: 10.0 },
+            { name: "Check Columpio", k: 2.0 },
+            { name: "Entrada (Agudo)", k: 0.5 },
+            { name: "Salida", k: 1.0 }
+        ];
+        const pipeStandards = {
+            's40': [{nom: '1/2"', di: 0.0158}, {nom: '3/4"', di: 0.0209}, {nom: '1"', di: 0.0266}, {nom: '1 1/4"', di: 0.0351}, {nom: '1 1/2"', di: 0.0409}, {nom: '2"', di: 0.0525}, {nom: '2 1/2"', di: 0.0627}, {nom: '3"', di: 0.0779}, {nom: '4"', di: 0.1023}, {nom: '6"', di: 0.1541}, {nom: '8"', di: 0.2027}, {nom: '10"', di: 0.2545}],
+            's80': [{nom: '1/2"', di: 0.0139}, {nom: '3/4"', di: 0.0189}, {nom: '1"', di: 0.0243}, {nom: '1 1/4"', di: 0.0325}, {nom: '1 1/2"', di: 0.0381}, {nom: '2"', di: 0.0493}, {nom: '3"', di: 0.0737}, {nom: '4"', di: 0.0972}, {nom: '6"', di: 0.1463}],
+            'copperK': [{nom: '1/2"', di: 0.0134}, {nom: '3/4"', di: 0.0199}, {nom: '1"', di: 0.0260}, {nom: '1 1/4"', di: 0.0321}, {nom: '1 1/2"', di: 0.0382}, {nom: '2"', di: 0.0504}]
+        };
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            isMobileMenuOpen = !isMobileMenuOpen;
+            
+            if (isMobileMenuOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden', 'opacity-0');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300); // Wait for fade out
+            }
+        }
+
+        function switchSection(id) {
+            currentSection = id;
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('flex'));
+            const target = document.getElementById(`sec-${id}`);
+            target.classList.remove('hidden');
+            if(id.startsWith('class') || id === 'npsh') target.classList.add('flex');
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            const btn = document.getElementById(`nav-${id}`);
+            if(btn) btn.classList.add('active');
+            
+            if(id === 'class2') updateClass2Available();
+            if(id === 'class3') updateClass3Available();
+            hideResults();
+            if(isMobileMenuOpen) toggleMobileMenu();
+        }
+
+        function setPipeTab(type) {
+            const s = document.getElementById('pipe-suction'), d = document.getElementById('pipe-discharge');
+            const bs = document.getElementById('btn-pipe-suction'), bd = document.getElementById('btn-pipe-discharge');
+            if(type === 'suction') { s.classList.remove('hidden'); d.classList.add('hidden'); bs.classList.add('text-blue-700','border-blue-600','bg-white'); bs.classList.remove('text-slate-500','border-transparent'); bd.classList.add('text-slate-500','border-transparent'); bd.classList.remove('text-blue-700','border-blue-600','bg-white'); }
+            else { s.classList.add('hidden'); d.classList.remove('hidden'); bd.classList.add('text-blue-700','border-blue-600','bg-white'); bd.classList.remove('text-slate-500','border-transparent'); bs.classList.add('text-slate-500','border-transparent'); bs.classList.remove('text-blue-700','border-blue-600','bg-white'); }
+        }
+
+        function loadFluid() {
+            const val = document.getElementById('fluid-preset').value;
+            const nameContainer = document.getElementById('custom-name-container');
+            if (val === 'custom') { 
+                nameContainer.classList.remove('hidden'); 
+                document.getElementById('fluid-name-input').focus(); 
+            } else { 
+                nameContainer.classList.add('hidden'); 
+                if (fluids[val]) { 
+                    document.getElementById('rho').value = fluids[val].rho; 
+                    document.getElementById('mu').value = fluids[val].mu;
+                    document.getElementById('pv').value = fluids[val].pv; 
+                }
+                if (val === 'file_fluid') {
+                    document.getElementById('patm').value = 100.5;
+                    document.getElementById('npsh-za').value = 1.46;
+                    document.getElementById('npsh-q').value = 0.01; 
+                } else if (val === 'water20') {
+                    document.getElementById('patm').value = 101.325;
+                }
+            }
+        }
+
+        function getFluidName() {
+            const val = document.getElementById('fluid-preset').value;
+            if (val === 'custom') return document.getElementById('fluid-name-input').value || "Fluido Personalizado";
+            const sel = document.getElementById('fluid-preset'); return sel.options[sel.selectedIndex].text;
+        }
+
+        function togglePumpInput() {
+            const c = document.getElementById('c2-has-pump').checked;
+            document.getElementById('c2-pump-container').classList.toggle('hidden', !c);
+            if(!c) document.getElementById('c2-pump-head').value = 0;
+            updateClass2Available();
+        }
+
+        // --- NEW LOGIC: CUSTOM ACCESSORY ---
+
+        function toggleCustomAccessory(selectEl) {
+            const row = selectEl.parentElement;
+            const customDiv = row.querySelector('.custom-inputs');
+            if (selectEl.value === 'custom') {
+                selectEl.classList.add('hidden');
+                customDiv.classList.remove('hidden');
+                customDiv.classList.add('flex');
+                row.querySelector('.acc-custom-name').focus();
+            }
+        }
+
+        function addAccessory(listId) {
+            const list = document.getElementById(listId);
+            const div = document.createElement('div');
+            // Changed from block to flex for better alignment
+            div.className = "flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1";
+            
+            let opts = accessoriesDB.map(a => `<option value="${a.k}">${a.name}</option>`).join('');
+            
+            // New structure supporting custom input
+            div.innerHTML = `
+                <input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1">
+                
+                <select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)">
+                    ${opts}
+                    <option value="custom" class="font-bold text-blue-600 bg-blue-50">+ Otro (Manual)</option>
+                </select>
+                
+                <div class="hidden flex-1 gap-1 custom-inputs">
+                    <input type="text" placeholder="Nombre" class="flex-1 p-1 text-[10px] border rounded acc-custom-name min-w-0">
+                    <input type="number" placeholder="K" step="0.01" class="w-12 p-1 text-[10px] border rounded acc-custom-k text-center">
+                </div>
+
+                <button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button>
+            `;
+            list.appendChild(div);
+        }
+
+        function getAccessoriesK(listId) {
+            let kTotal = 0;
+            document.querySelectorAll(`#${listId} .acc-row`).forEach(row => {
+                const qty = parseFloat(row.querySelector('.acc-qty').value) || 0;
+                const select = row.querySelector('.acc-select');
+                let kVal = 0;
+                
+                // Logic to check if we are in custom mode or standard mode
+                if (select && !select.classList.contains('hidden')) {
+                     kVal = parseFloat(select.value) || 0;
+                } else {
+                     // Custom mode
+                     kVal = parseFloat(row.querySelector('.acc-custom-k').value) || 0;
+                }
+                kTotal += qty * kVal;
+            });
+            return kTotal;
+        }
+
+        function updateClass2Available() {
+            const p1=parseFloat(document.getElementById('c2-p1').value)*1000, p2=parseFloat(document.getElementById('c2-p2').value)*1000, z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0, rho=parseFloat(document.getElementById('rho').value);
+            const h = ((p1-p2)/(rho*9.81)) + (z1-z2) + hp;
+            const d = document.getElementById('c2-total-energy');
+            d.innerText = h.toFixed(2)+" m";
+            d.className = h<=0 ? "text-2xl font-mono font-bold text-red-500" : "text-2xl font-mono font-bold text-indigo-700";
+        }
+
+        function updateClass3Available() {
+            const p1=parseFloat(document.getElementById('c3-p1').value)*1000, p2=parseFloat(document.getElementById('c3-p2').value)*1000, z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value), rho=parseFloat(document.getElementById('rho').value);
+            const h = ((p1-p2)/(rho*9.81)) + (z1-z2);
+            const d = document.getElementById('c3-hl-disp');
+            d.innerText = h.toFixed(3)+" m";
+            d.className = h<=0 ? "text-2xl font-mono font-bold text-red-500" : "text-2xl font-mono font-bold text-emerald-600";
+        }
+
+        function hideResults() {
+             ['res-box-class1', 'res-box-class2', 'res-box-class3', 'res-box-npsh', 'err-box-class1', 'err-box-class2', 'err-box-class3', 'err-box-npsh'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
+        }
+
+        function showError(sectionId, msg) {
+            hideResults();
+            const box = document.getElementById(`err-box-${sectionId}`); const txt = document.getElementById(`err-msg-${sectionId}`);
+            if(box && txt) { txt.innerText = msg; box.classList.remove('hidden'); }
+        }
+
+        // --- ANALYSIS HELPERS ---
+        function analyzeVelocity(v, type) {
+            if (type === 'suc') {
+                if (v > 1.5) return `<span class="text-red-300">⚠️ Alta Velocidad en Succión (${v.toFixed(2)} m/s). Riesgo de cavitación. Se sugiere < 1.5 m/s.</span>`;
+                if (v < 0.4) return `<span class="text-yellow-300">⚠️ Baja Velocidad (${v.toFixed(2)} m/s). Riesgo de sedimentación.</span>`;
+            } else {
+                if (v > 3.0) return `<span class="text-yellow-300">⚠️ Velocidad de Descarga Alta (${v.toFixed(2)} m/s). Posible ruido/erosión. Ideal < 3 m/s.</span>`;
+            }
+            return `<span class="text-emerald-300">✅ Velocidad ${type==='suc'?'Succión':'Descarga'} OK (${v.toFixed(2)} m/s).</span>`;
+        }
+
+        function getValveRecommendations(d, viscosity) {
+            let recs = [];
+            if (viscosity > 0.05) recs.push("Fluido Viscoso: Evitar Válvulas de Globo (Alta pérdida). Preferir Compuerta o Bola paso completo.");
+            if (d < 0.0508) recs.push("Tamaño Pequeño (<2\"): Válvulas Roscadas (Bola/Compuerta) son económicas y comunes.");
+            else recs.push("Tamaño Grande (>2\"): Válvulas Bridadas. Considere Válvulas de Mariposa para ahorrar espacio y costo.");
+            return recs.map(r => `<div class="mb-1"><span class="rec-tag">Válvulas</span>${r}</div>`).join('');
+        }
+        
+        // --- HELPER FOR NOMINAL DIAMETER ---
+        function applyStdDiameter(selectEl, targetId) {
+            const val = selectEl.value;
+            if (val === '-') return;
+            const targetInput = document.getElementById(targetId);
+            if(targetInput) { targetInput.value = val; }
+        }
+        
+        function populateStdSelectors() {
+            const optionsHTML = '<option value="-">- Manual -</option>' + 
+                pipeStandards.s40.map(p => `<option value="${p.di}">${p.nom} (${(p.di*1000).toFixed(1)}mm)</option>`).join('');
+            document.querySelectorAll('select[onchange^="applyStdDiameter"]').forEach(sel => { sel.innerHTML = optionsHTML; });
+        }
+
+        // --- DRAWING ENGINE ---
+        function drawSystemClass1(ctx, p1, z1, z2, p2, l_suc, d_suc, l_dis, d_dis) {
+            const w = ctx.canvas.width;
+            const h = ctx.canvas.height;
+            ctx.clearRect(0, 0, w, h);
+            
+            // Layout Params
+            const margin = 50;
+            const pumpX = w * 0.4;
+            const pumpY = h * 0.7; // Base reference for Z=0 (approx)
+            
+            // Map Elevations (Schematic scale)
+            // If z1 > z2, tank is higher. Map visual Z.
+            // visualY = pumpY - (realZ * scaleFactor)
+            const scaleZ = 5; // Pixels per meter (schematic)
+            const y1 = pumpY - (z1 * scaleZ);
+            const y2 = pumpY - (z2 * scaleZ);
+            
+            // Pipe Thickness
+            const thickSuc = Math.max(2, d_suc * 40); // Exaggerated
+            const thickDis = Math.max(2, d_dis * 40);
+
+            // Draw Suction Tank
+            const tankW = 60; const tankH = 80;
+            const tankX = margin;
+            const tankY = y1 - tankH;
+            
+            ctx.fillStyle = "#e2e8f0";
+            ctx.strokeStyle = "#475569";
+            ctx.lineWidth = 2;
+            
+            // Tank Body
+            ctx.beginPath();
+            ctx.rect(tankX, tankY, tankW, tankH);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Tank Lid (Pressurized or Open)
+            if (p1 > 0) {
+                 ctx.beginPath();
+                 ctx.ellipse(tankX + tankW/2, tankY, tankW/2, 10, 0, Math.PI, 0); // Dome
+                 ctx.stroke();
+                 ctx.fillStyle = "#cbd5e1"; ctx.fill();
+            } else {
+                 // Water surface
+                 ctx.beginPath();
+                 ctx.moveTo(tankX + 5, tankY + 20);
+                 ctx.lineTo(tankX + tankW - 5, tankY + 20);
+                 ctx.strokeStyle = "#3b82f6"; ctx.stroke();
+                 ctx.strokeStyle = "#475569";
+            }
+
+            // Draw Pump
+            ctx.fillStyle = "#ef4444";
+            ctx.beginPath();
+            ctx.arc(pumpX, pumpY, 15, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.font = "bold 16px Arial";
+            ctx.fillText("P", pumpX-6, pumpY+5);
+
+            // Draw Suction Pipe
+            ctx.strokeStyle = "#64748b";
+            ctx.lineWidth = thickSuc;
+            ctx.beginPath();
+            ctx.moveTo(tankX + tankW, tankY + tankH - 10); // Out of tank
+            ctx.lineTo(pumpX - 15, pumpY); // To pump
+            ctx.stroke();
+            
+            // Draw Discharge Pipe
+            ctx.lineWidth = thickDis;
+            ctx.beginPath();
+            ctx.moveTo(pumpX + 15, pumpY);
+            ctx.lineTo(pumpX + 15 + 50, pumpY); // Short horiz
+            ctx.lineTo(pumpX + 15 + 50, y2); // Vert up/down
+            ctx.lineTo(w - margin - tankW, y2); // Horiz to dest
+            ctx.stroke();
+
+            // Destination
+            const destX = w - margin - tankW;
+            const destY = y2 - tankH/2;
+            
+            if (p2 > 20000 || z2 > 0) { // Assume tank if high pressure or height defined
+                 ctx.lineWidth = 2;
+                 ctx.fillStyle = "#e2e8f0";
+                 ctx.beginPath();
+                 ctx.rect(destX, destY, tankW, tankH);
+                 ctx.fill();
+                 ctx.stroke();
+            } else {
+                // Free jet / Nozzle
+                 ctx.fillStyle = "#3b82f6";
+                 ctx.beginPath();
+                 ctx.moveTo(destX, y2 - 5);
+                 ctx.lineTo(destX + 20, y2 - 10);
+                 ctx.lineTo(destX + 20, y2 + 10);
+                 ctx.lineTo(destX, y2 + 5);
+                 ctx.fill();
+            }
+
+            // Labels
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "10px Inter";
+            ctx.fillText(`L=${l_suc}m`, (tankX + pumpX)/2, (tankY + tankH + pumpY)/2 - 10);
+            ctx.fillText(`L=${l_dis}m`, (pumpX + destX)/2, y2 - 10);
+            ctx.fillText(`Z1=${z1}m`, tankX, tankY + tankH + 15);
+            ctx.fillText(`Z2=${z2}m`, destX, y2 + tankH + 15);
+        }
+
+        function drawSystemNPSH(ctx, za, zb, l, d, p_tank) {
+             const w = ctx.canvas.width;
+            const h = ctx.canvas.height;
+            ctx.clearRect(0, 0, w, h);
+            
+            const margin = 50;
+            const pumpX = w * 0.6;
+            const pumpY = h * 0.5; // Base ref
+            
+            // Scale
+            const scaleZ = 20; // More detail for NPSH
+            const y_tank = pumpY - ((za - zb) * scaleZ);
+            
+            // Tank
+            const tankW = 80; const tankH = 100;
+            const tankX = margin;
+            
+            ctx.fillStyle = "#ffedd5"; // Orange tint
+            ctx.strokeStyle = "#ea580c";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.rect(tankX, y_tank - tankH, tankW, tankH);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Lid if pressurized
+            if (p_tank > 0) {
+                 ctx.beginPath();
+                 ctx.moveTo(tankX, y_tank - tankH);
+                 ctx.quadraticCurveTo(tankX + tankW/2, y_tank - tankH - 20, tankX + tankW, y_tank - tankH);
+                 ctx.fill(); ctx.stroke();
+                 ctx.fillStyle="#c2410c"; ctx.fillText("P>0", tankX+30, y_tank-tankH-5);
+            } else {
+                 ctx.fillStyle="#3b82f6"; 
+                 ctx.fillRect(tankX+5, y_tank-30, tankW-10, 20); // Water
+                 ctx.fillStyle="#64748b"; ctx.fillText("Patm", tankX+25, y_tank-tankH-5);
+            }
+
+            // Pump
+            ctx.fillStyle = "#ea580c";
+            ctx.beginPath();
+            ctx.arc(pumpX, pumpY, 20, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.fillStyle = "white"; ctx.fillText("P", pumpX-5, pumpY+5);
+
+            // Pipe
+            ctx.strokeStyle = "#9a3412";
+            ctx.lineWidth = Math.max(3, d*50);
+            ctx.beginPath();
+            ctx.moveTo(tankX + tankW, y_tank - 10);
+            // If tank is low, pipe goes up. If tank high, pipe goes down/straight.
+            ctx.lineTo(pumpX - 20, pumpY);
+            ctx.stroke();
+
+            // Valves/Acc
+            const midX = (tankX + tankW + pumpX)/2;
+            const midY = (y_tank - 10 + pumpY)/2;
+            
+            // Draw a generic valve symbol
+            ctx.fillStyle = "#475569";
+            ctx.beginPath();
+            ctx.moveTo(midX, midY);
+            ctx.lineTo(midX-5, midY-5);
+            ctx.lineTo(midX+5, midY-5);
+            ctx.lineTo(midX, midY);
+            ctx.lineTo(midX-5, midY+5);
+            ctx.lineTo(midX+5, midY+5);
+            ctx.fill();
+
+            // Labels
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "12px Inter";
+            ctx.fillText(`Za=${za}m`, tankX, y_tank + 15);
+            ctx.fillText(`Zb=${zb}m`, pumpX, pumpY + 35);
+            ctx.fillText(`L=${l}m`, midX, midY - 15);
+        }
+
+        // --- MATH CORE ---
+        function calculate() {
+            const rho=parseFloat(document.getElementById('rho').value), mu=parseFloat(document.getElementById('mu').value), nu=mu/rho, g=9.81;
+            const fluidName = getFluidName();
+            document.querySelectorAll('.result-fluid-name').forEach(el => el.innerText = fluidName);
+            hideResults();
+
+            try {
+                // CLASE I
+                if(currentSection==='class1') {
+                    const Q=parseFloat(document.getElementById('c1-q').value), eff=parseFloat(document.getElementById('c1-eff').value)/100;
+                    const p1=parseFloat(document.getElementById('c1-p1').value)*1000, p2=parseFloat(document.getElementById('c1-p2').value)*1000, z1=parseFloat(document.getElementById('c1-z1').value), z2=parseFloat(document.getElementById('c1-z2').value);
+                    const Ls=parseFloat(document.getElementById('c1-l-suc').value), Ds=parseFloat(document.getElementById('c1-d-suc').value), es=parseFloat(document.getElementById('c1-mat-suc').value), Ks=getAccessoriesK('c1-acc-suc-list');
+                    const Ld=parseFloat(document.getElementById('c1-l-dis').value), Dd=parseFloat(document.getElementById('c1-d-dis').value), ed=parseFloat(document.getElementById('c1-mat-dis').value), Kd=getAccessoriesK('c1-acc-dis-list');
+                    
+                    const As=Math.PI*Ds**2/4, vs=Q/As, Res=(vs*Ds)/nu, fs=0.25/Math.pow(Math.log10((es/(3.7*Ds))+(5.74/Math.pow(Res,0.9))),2), hLs=(fs*(Ls/Ds)+Ks)*(vs**2/(2*g));
+                    const Ad=Math.PI*Dd**2/4, vd=Q/Ad, Red=(vd*Dd)/nu, fd=0.25/Math.pow(Math.log10((ed/(3.7*Dd))+(5.74/Math.pow(Red,0.9))),2), hLd=(fd*(Ld/Dd)+Kd)*(vd**2/(2*g));
+                    
+                    const hA=((p2-p1)/(rho*g))+(z2-z1)+(hLs+hLd);
+                    const staticHead = ((p2-p1)/(rho*g))+(z2-z1);
+                    const Pb=(hA*rho*g*Q)/eff;
+                    
+                    document.getElementById('res-c1-main').innerText = (Pb/1000).toFixed(2)+" kW";
+                    document.getElementById('res-c1-sub').innerText = (Pb/745.7).toFixed(2)+" HP";
+                    document.getElementById('res-c1-ha').innerText = hA.toFixed(2)+" m";
+                    document.getElementById('res-c1-hls').innerText = hLs.toFixed(2)+" m";
+                    document.getElementById('res-c1-hld').innerText = hLd.toFixed(2)+" m";
+                    document.getElementById('res-c1-static').innerText = staticHead.toFixed(2)+" m";
+                    
+                    const analysisDiv = document.getElementById('c1-analysis');
+                    let analysisHTML = `<div class="analysis-title"><i class="fa-solid fa-microscope"></i> Análisis Técnico</div>`;
+                    analysisHTML += `<div class="mb-1">${analyzeVelocity(vs, 'suc')}</div>`;
+                    analysisHTML += `<div class="mb-1">${analyzeVelocity(vd, 'dis')}</div>`;
+                    analysisHTML += getValveRecommendations(Dd, mu);
+                    analysisDiv.innerHTML = analysisHTML;
+                    analysisDiv.classList.remove('hidden');
+
+                    document.getElementById('res-box-class1').classList.remove('hidden');
+                    
+                    // Draw Diagram
+                    const ctx = document.getElementById('canvas-class1').getContext('2d');
+                    drawSystemClass1(ctx, p1/1000, z1, z2, p2/1000, Ls, Ds, Ld, Dd);
+                }
+
+                // CLASE II
+                if(currentSection==='class2') {
+                    const L=parseFloat(document.getElementById('c2-l').value), D=parseFloat(document.getElementById('c2-d').value), e=parseFloat(document.getElementById('c2-mat').value), K=getAccessoriesK('c2-acc-list');
+                    const p1=parseFloat(document.getElementById('c2-p1').value)*1000, p2=parseFloat(document.getElementById('c2-p2').value)*1000, z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0;
+                    const ha=((p1-p2)/(rho*g))+(z1-z2)+hp;
+                    if(ha<=0) throw "Energía disponible insuficiente (<= 0)";
+                    
+                    let v=1, f=0.02, iter=0; 
+                    for(let i=0;i<100;i++){ 
+                        iter++;
+                        let Re=(v*D)/nu; 
+                        f=0.25/Math.pow(Math.log10((e/(3.7*D))+(5.74/Math.pow(Re,0.9))),2); 
+                        let vn=Math.sqrt((2*g*ha)/((f*L/D)+K)); 
+                        if(Math.abs(v-vn)<1e-6) break; 
+                        v=(v+vn)/2; 
+                    }
+                    const Q=v*(Math.PI*D**2/4);
+                    
+                    document.getElementById('res-c2-main').innerText = Q.toFixed(4)+" m³/s";
+                    document.getElementById('res-c2-m3h').innerText = (Q*3600).toFixed(2)+" m³/h";
+                    document.getElementById('res-c2-lmin').innerText = (Q*60000).toFixed(1)+" L/min";
+                    document.getElementById('res-c2-hl').innerText = ha.toFixed(2)+" m";
+                    document.getElementById('res-c2-v').innerText = v.toFixed(2)+" m/s";
+                    document.getElementById('res-c2-f').innerText = f.toFixed(5);
+                    document.getElementById('res-c2-iter').innerText = iter;
+
+                    const analysisDiv = document.getElementById('c2-analysis');
+                    let analysisHTML = `<div class="analysis-title"><i class="fa-solid fa-microscope"></i> Análisis de Flujo</div>`;
+                    analysisHTML += `<div class="mb-1">${analyzeVelocity(v, 'gen')}</div>`;
+                    analysisDiv.innerHTML = analysisHTML;
+                    analysisDiv.classList.remove('hidden');
+
+                    document.getElementById('res-box-class2').classList.remove('hidden');
+                }
+
+                // CLASE III
+                if(currentSection==='class3') {
+                    const Q=parseFloat(document.getElementById('c3-q').value), L=parseFloat(document.getElementById('c3-l').value), e=parseFloat(document.getElementById('c3-eps').value), std=document.getElementById('c3-std-type').value;
+                    const p1=parseFloat(document.getElementById('c3-p1').value)*1000, p2=parseFloat(document.getElementById('c3-p2').value)*1000, z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value);
+                    const K = getAccessoriesK('c3-acc-list'); 
+                    const hl=((p1-p2)/(rho*g))+(z1-z2);
+                    if(hl<=0) throw "Pérdida disponible <= 0. Revise presiones.";
+                    
+                    let low = 0.001; let high = 5.0; let D_final = 0;
+                    for(let i=0; i<60; i++) {
+                        let mid = (low + high) / 2;
+                        let A = Math.PI * mid**2 / 4;
+                        let v = Q / A;
+                        let Re = (v * mid) / nu;
+                        let f = 0.25 / Math.pow(Math.log10((e/(3.7*mid)) + (5.74/Math.pow(Re, 0.9))), 2);
+                        let hL_calc = (f * (L/mid) + K) * (v**2 / (2*g));
+                        if (hL_calc > hl) { low = mid; } else { high = mid; }
+                    }
+                    D_final = high;
+
+                    document.getElementById('res-c3-main').innerText = (D_final*1000).toFixed(2)+" mm";
+                    document.getElementById('res-c3-sub').innerText = D_final.toFixed(4)+" m";
+                    document.getElementById('res-c3-hl').innerText = hl.toFixed(2)+" m";
+                    document.getElementById('res-c3-q').innerText = Q.toFixed(3)+" m³/s";
+                    
+                    let isS=false;
+                    const recBox = document.getElementById('rec-pipe-box');
+                    if(pipeStandards[std]){
+                        const m=pipeStandards[std].find(p=>p.di>=D_final);
+                        if(m){ 
+                            isS=true; 
+                            const recHTML = `<div class="flex justify-between items-center text-emerald-200"><span>Nominal:</span><span class="font-bold text-white text-lg">${m.nom}</span></div><div class="flex justify-between text-xs text-emerald-200/70 mt-1"><span>DI: ${(m.di*1000).toFixed(2)} mm</span><span>Estándar: ${std.toUpperCase()}</span></div>`; 
+                            document.getElementById('rec-pipe-content').innerHTML=recHTML; 
+                            recBox.classList.remove('hidden');
+                        } else { 
+                            document.getElementById('rec-pipe-content').innerHTML="<span class='text-yellow-400'>Fuera de rango en tabla estándar seleccionada.</span>"; 
+                            recBox.classList.remove('hidden'); 
+                        }
+                    } else { recBox.classList.add('hidden'); }
+                    
+                    document.getElementById('res-c3-std-found').innerText = isS ? "Si" : "No";
+                    document.getElementById('res-c3-std-found').className = isS ? "text-emerald-300 font-bold" : "text-slate-400";
+                    
+                    const analysisDiv = document.getElementById('c3-analysis');
+                    let analysisHTML = `<div class="analysis-title"><i class="fa-solid fa-lightbulb"></i> Recomendaciones de Diseño</div>`;
+                    if (K > 5.0) analysisHTML += `<div class="mb-1"><span class="rec-tag text-yellow-300">Pérdidas</span>Se detectaron altas pérdidas locales (K alto). Considere usar <b>Codos de Radio Largo</b> o <b>Válvulas de Compuerta</b> en lugar de Globo para reducir el diámetro necesario.</div>`;
+                    if (D_final < 0.05) analysisHTML += `<div class="mb-1"><span class="rec-tag">Material</span>Para diámetros pequeños (< 2"), el <b>Cobre Tipo K</b> o <b>PVC RDE</b> son opciones comunes y económicas. <span class="price-tag">$$</span></div>`;
+                    else if (p1 > 2000000) analysisHTML += `<div class="mb-1"><span class="rec-tag">Presión</span>Alta presión detectada. Se recomienda <b>Acero al Carbón Cédula 80</b> o superior. <span class="price-tag">$$$</span></div>`;
+                    else analysisHTML += `<div class="mb-1"><span class="rec-tag">Material</span>Para diámetros medios/grandes, el <b>Acero Cédula 40</b> es el estándar industrial balanceado. <span class="price-tag">$$</span></div>`;
+                    analysisHTML += getValveRecommendations(D_final, mu);
+
+                    analysisDiv.innerHTML = analysisHTML;
+                    analysisDiv.classList.remove('hidden');
+
+                    document.getElementById('res-box-class3').classList.remove('hidden');
+                }
+
+                // NPSH CALC & OPTIMIZATION
+                if(currentSection==='npsh') {
+                    const Q=parseFloat(document.getElementById('npsh-q').value);
+                    const p_tank=parseFloat(document.getElementById('npsh-p1').value)*1000;
+                    const za=parseFloat(document.getElementById('npsh-za').value);
+                    const zb=parseFloat(document.getElementById('npsh-zb').value);
+                    const L=parseFloat(document.getElementById('npsh-l').value);
+                    const D=parseFloat(document.getElementById('npsh-d').value);
+                    const e=parseFloat(document.getElementById('npsh-mat').value);
+                    const K=getAccessoriesK('npsh-acc-list');
+                    const pv=parseFloat(document.getElementById('pv').value)*1000;
+                    const patm=parseFloat(document.getElementById('patm').value)*1000;
+                    const npsh_req = parseFloat(document.getElementById('npsh-req').value);
+                    const safety_factor = parseFloat(document.getElementById('npsh-safety').value);
+
+                    // Calc NPSHa Current
+                    const A = Math.PI * D**2 / 4;
+                    const v = Q/A;
+                    const Re = (v*D)/nu;
+                    const f = 0.25 / Math.pow(Math.log10((e/(3.7*D)) + (5.74/Math.pow(Re, 0.9))), 2);
+                    const hf = (f*(L/D) + K) * (v**2 / (2*g));
+                    const gamma = rho * g;
+                    const h_press = (patm + p_tank - pv) / gamma;
+                    const h_elev = za - zb;
+                    const npsha = h_press + h_elev - hf;
+
+                    // Display Current Results
+                    const resMain = document.getElementById('res-npsh-main');
+                    const status = document.getElementById('npsh-status');
+                    const target_npsh = npsh_req * safety_factor;
+                    
+                    resMain.innerText = npsha.toFixed(3) + " m";
+                    document.getElementById('res-npsh-hatm').innerText = (patm/gamma).toFixed(2)+" m";
+                    document.getElementById('res-npsh-z').innerText = h_elev.toFixed(2)+" m";
+                    document.getElementById('res-npsh-hl').innerText = hf.toFixed(3)+" m";
+                    document.getElementById('res-npsh-hvp').innerText = (pv/gamma).toFixed(3)+" m";
+                    document.getElementById('npsh-target-val').innerText = target_npsh.toFixed(2) + " m";
+
+                    // Risk Logic
+                    if(npsha >= target_npsh) {
+                        resMain.className = "text-5xl font-mono font-bold text-green-400 mb-2";
+                        status.innerText = "OPERACIÓN SEGURA";
+                        status.className = "text-sm font-bold uppercase tracking-wide text-green-400";
+                        document.getElementById('npsh-opt-panel').classList.add('hidden');
+                    } else {
+                        resMain.className = "text-5xl font-mono font-bold text-red-500 mb-2";
+                        status.innerText = "RIESGO DE CAVITACIÓN";
+                        status.className = "text-sm font-bold uppercase tracking-wide text-red-500";
+                        document.getElementById('npsh-opt-panel').classList.remove('hidden');
+
+                        // Optimization Logic
+                        const deficit = target_npsh - npsha;
+                        let proposalsHTML = "";
+
+                        // Proposal 1: Elevation (Z)
+                        const new_za = za + deficit;
+                        proposalsHTML += `<div class="opt-row"><div><div class="opt-label">1. Elevar Tanque</div><div class="text-[10px] text-slate-400">Aumentar nivel mínimo de succión.</div></div><div class="text-right"><div class="opt-val">Nivel: ${new_za.toFixed(2)} m</div><div class="opt-cost">$ Operativo</div></div></div>`;
+
+                        // Proposal 2: Pressure (P)
+                        const p_needed = deficit * gamma; // Pa
+                        const new_p_tank_kpa = (p_tank + p_needed) / 1000;
+                        proposalsHTML += `<div class="opt-row"><div><div class="opt-label">2. Presurizar Tanque</div><div class="text-[10px] text-slate-400">Inertizar o sellar tanque.</div></div><div class="text-right"><div class="opt-val">P. Man: ${new_p_tank_kpa.toFixed(1)} kPa</div><div class="opt-cost">$$$$ Equipo</div></div></div>`;
+
+                        // Proposal 3: Diameter (D) - Iterative
+                        let found_D = false;
+                        for(let pipe of pipeStandards['s40']) {
+                            if(pipe.di > D) {
+                                // Test this diameter
+                                const D_new = pipe.di;
+                                const A_new = Math.PI * D_new**2 / 4;
+                                const v_new = Q/A_new;
+                                const Re_new = (v_new*D_new)/nu;
+                                const f_new = 0.25 / Math.pow(Math.log10((e/(3.7*D_new)) + (5.74/Math.pow(Re_new, 0.9))), 2);
+                                const hf_new = (f_new*(L/D_new) + K) * (v_new**2 / (2*g)); 
+                                const npsha_new = h_press + h_elev - hf_new;
+                                
+                                if(npsha_new >= target_npsh) {
+                                    proposalsHTML += `<div class="opt-row"><div><div class="opt-label">3. Aumentar Diámetro</div><div class="text-[10px] text-slate-400">Reducir pérdidas por fricción.</div></div><div class="text-right"><div class="opt-val">Ø: ${pipe.nom}</div><div class="text-[9px] text-emerald-400/70">NPSHa: ${npsha_new.toFixed(2)}m</div><div class="opt-cost">$$ Material</div></div></div>`;
+                                    found_D = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(!found_D) {
+                             proposalsHTML += `<div class="opt-row"><div><div class="opt-label">3. Aumentar Diámetro</div></div><div class="text-right"><div class="text-slate-500 text-[10px]">No suficiente (Pérdidas locales dominan)</div></div></div>`;
+                        }
+
+                        if(K > 2.0) {
+                             proposalsHTML += `<div class="opt-row border-0"><div><div class="opt-label text-yellow-300">4. Revisar Accesorios</div><div class="text-[10px] text-slate-400">K actual (${K.toFixed(1)}) es alto. Simplifique la línea.</div></div><div class="text-right"><div class="opt-cost">$ Diseño</div></div></div>`;
+                        }
+
+                        document.getElementById('npsh-proposals').innerHTML = proposalsHTML;
+                    }
+                    
+                    document.getElementById('res-box-npsh').classList.remove('hidden');
+                    
+                    // Draw NPSH Diagram
+                    const ctx = document.getElementById('canvas-npsh').getContext('2d');
+                    drawSystemNPSH(ctx, za, zb, L, D, p_tank/1000);
+                }
+
+            } catch(e) { 
+                showError(currentSection, e); 
+            }
+        }
+        
+        loadFluid();
+        populateStdSelectors(); // Run once on load to fill dropdowns
+    </script>
+</body>
+</html>

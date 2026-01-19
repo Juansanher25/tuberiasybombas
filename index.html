@@ -30,6 +30,17 @@
         .input-std.has-badge { border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: 0; }
         .input-std:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); position: relative; z-index: 10; }
         
+        /* Unit Select Styling */
+        .unit-select {
+            background-color: #f1f5f9; border: 1px solid #cbd5e1; border-left: 0;
+            padding: 0 0.5rem; font-size: 0.7rem; color: #334155; font-weight: 600;
+            border-top-right-radius: 0.375rem; border-bottom-right-radius: 0.375rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; outline: none; min-width: 60px; max-width: 90px;
+        }
+        .unit-select:focus { background-color: #e2e8f0; }
+        
+        /* Static badge for non-convertible units (m, %) */
         .unit-badge {
             background-color: #f1f5f9; border: 1px solid #cbd5e1; border-left: 0;
             padding: 0 0.75rem; font-size: 0.75rem; color: #64748b; font-weight: 600;
@@ -83,7 +94,7 @@
             </div>
         </div>
         <div class="text-xs text-slate-400 hidden md:block">
-            Profesor Ph.D. Juan Sandoval Herrera | 2025
+            Profesor Ph.D. Juan Sandoval Herrera | 2026
         </div>
         <!-- Mobile right indicator -->
         <div class="md:hidden text-xs text-slate-400">
@@ -153,9 +164,9 @@
                     <div class="input-group">
                         <label>Selección</label>
                         <select id="fluid-preset" onchange="loadFluid()" class="input-std text-xs w-full">
-                            <option value="water20">Agua (20°C)</option>
+                            <option value="water20" selected>Agua (20°C)</option>
                             <option value="water80">Agua (80°C)</option>
-                            <option value="file_fluid" selected>Fluido Archivo (Gasolina/HC)</option>
+                            <option value="file_fluid">Fluido Archivo (Gasolina/HC)</option>
                             <option value="oil">Aceite SAE 30</option>
                             <option value="custom">Personalizado</option>
                         </select>
@@ -169,19 +180,38 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-[9px] text-slate-500 font-bold block">Densidad (kg/m³)</label>
-                            <input type="number" id="rho" value="674" class="input-std text-xs">
+                            <input type="number" id="rho" value="998" class="input-std text-xs">
                         </div>
-                        <div>
+                        <div class="pr-1"> <!-- Added padding-right to trim the cell slightly -->
                             <label class="text-[9px] text-slate-500 font-bold block">Viscosidad (Pa·s)</label>
-                            <input type="number" id="mu" value="0.00003" step="1e-6" class="input-std text-xs">
+                            <input type="number" id="mu" value="0.001002" step="1e-6" class="input-std text-xs">
                         </div>
-                        <div>
-                            <label class="text-[9px] text-slate-500 font-bold block">P. Vapor (kPa)</label>
-                            <input type="number" id="pv" value="62.1" step="0.01" class="input-std text-xs">
-                        </div>
-                        <div>
-                            <label class="text-[9px] text-slate-500 font-bold block">P. Atm (kPa)</label>
-                            <input type="number" id="patm" value="100.5" step="0.1" class="input-std text-xs">
+                        <div class="col-span-2 grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[9px] text-slate-500 font-bold block">P. Vapor</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="pv" value="2.34" step="0.01" class="input-std text-xs has-badge">
+                                    <select id="unit-pv" class="unit-select text-[9px]">
+                                        <option value="1" selected>kPa</option>
+                                        <option value="100">bar</option>
+                                        <option value="6.89476">psi</option>
+                                        <option value="0.133322">mmHg</option>
+                                        <option value="101.325">atm</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-slate-500 font-bold block">P. Atm</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="patm" value="101.325" step="0.1" class="input-std text-xs has-badge">
+                                    <select id="unit-patm" class="unit-select text-[9px]">
+                                        <option value="1" selected>kPa</option>
+                                        <option value="100">bar</option>
+                                        <option value="6.89476">psi</option>
+                                        <option value="101.325">atm</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,7 +230,7 @@
                     
                     <div class="mb-8">
                         <p class="text-lg md:text-xl text-slate-600 serif-font italic mb-1">Profesor Ph.D. Juan Sandoval Herrera</p>
-                        <p class="text-slate-400 font-bold tracking-widest text-sm">2025</p>
+                        <p class="text-slate-400 font-bold tracking-widest text-sm">2026</p>
                     </div>
 
                     <div class="mb-10 rounded-xl overflow-hidden shadow-2xl border-4 border-white mx-auto max-w-xl transform hover:scale-[1.02] transition duration-500">
@@ -269,11 +299,47 @@
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                             <h3 class="font-bold text-slate-700 mb-5 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-gauge text-blue-500"></i> Condiciones de Operación</h3>
                             <div class="grid grid-cols-2 gap-5">
-                                <div class="input-group col-span-2"><label>Caudal (Q)</label><div class="input-wrapper"><input type="number" id="c1-q" value="0.05" class="input-std has-badge"><span class="unit-badge">m³/s</span></div></div>
-                                <div class="input-group"><label>P. Entrada (p1)</label><div class="input-wrapper"><input type="number" id="c1-p1" value="0" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
-                                <div class="input-group"><label>P. Salida (p2)</label><div class="input-wrapper"><input type="number" id="c1-p2" value="400" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group col-span-2">
+                                    <label>Caudal (Q)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="c1-q" value="500" class="input-std has-badge">
+                                        <select id="unit-c1-q" class="unit-select">
+                                            <option value="1">m³/s</option>
+                                            <option value="0.000277778">m³/h</option>
+                                            <option value="0.0000166667" selected>L/min</option>
+                                            <option value="0.001">L/s</option>
+                                            <option value="0.00006309">GPM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>P. Entrada (p1)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="c1-p1" value="0" class="input-std has-badge">
+                                        <select id="unit-c1-p1" class="unit-select">
+                                            <option value="1" selected>kPa</option>
+                                            <option value="0.001">Pa</option>
+                                            <option value="100">bar</option>
+                                            <option value="6.89476">psi</option>
+                                            <option value="101.325">atm</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>P. Salida (p2)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="c1-p2" value="4" class="input-std has-badge">
+                                        <select id="unit-c1-p2" class="unit-select">
+                                            <option value="1">kPa</option>
+                                            <option value="0.001">Pa</option>
+                                            <option value="100">bar</option>
+                                            <option value="6.89476">psi</option>
+                                            <option value="101.325" selected>atm</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="input-group"><label>Z1</label><div class="input-wrapper"><input type="number" id="c1-z1" value="0" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                <div class="input-group"><label>Z2</label><div class="input-wrapper"><input type="number" id="c1-z2" value="20" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                <div class="input-group"><label>Z2</label><div class="input-wrapper"><input type="number" id="c1-z2" value="10" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
                                 <div class="input-group col-span-2"><label>Eficiencia (%)</label><div class="input-wrapper"><input type="number" id="c1-eff" value="75" class="input-std has-badge"><span class="unit-badge">%</span></div></div>
                             </div>
                         </div>
@@ -296,19 +362,32 @@
                                             </div>
                                             <div class="flex-1">
                                                 <label>Diámetro Real (D)</label>
-                                                <div class="input-wrapper"><input type="number" id="c1-d-suc" value="0.10" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                                <div class="input-wrapper">
+                                                    <input type="number" id="c1-d-suc" value="0.0525" class="input-std has-badge">
+                                                    <select id="unit-c1-d-suc" class="unit-select">
+                                                        <option value="1" selected>m</option>
+                                                        <option value="0.01">cm</option>
+                                                        <option value="0.001">mm</option>
+                                                        <option value="0.0254">in</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="border-t pt-4">
                                     <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-suc-list')" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
-                                    <div id="c1-acc-suc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                                    <div id="c1-acc-suc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                         <!-- Default Acc updated to new K values -->
+                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="0.5">Entrada (Agudo)</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
+                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="2" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="0.57">Codo 90° Estándar</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
+                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="6.46">Válv. Globo</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
+                                    </div>
                                 </div>
                             </div>
                             <div id="pipe-discharge" class="p-6 space-y-5 hidden flex-1">
                                 <div class="grid grid-cols-2 gap-5">
-                                    <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c1-l-dis" value="50" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
+                                    <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c1-l-dis" value="20" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
                                     <div class="input-group col-span-2"><label>Material</label><select id="c1-mat-dis" class="input-std w-full"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option></select></div>
                                     <div class="input-group col-span-2">
                                         <div class="flex gap-2">
@@ -320,14 +399,26 @@
                                             </div>
                                             <div class="flex-1">
                                                 <label>Diámetro Real (D)</label>
-                                                <div class="input-wrapper"><input type="number" id="c1-d-dis" value="0.08" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                                <div class="input-wrapper">
+                                                    <input type="number" id="c1-d-dis" value="0.0525" class="input-std has-badge">
+                                                    <select id="unit-c1-d-dis" class="unit-select">
+                                                        <option value="1" selected>m</option>
+                                                        <option value="0.01">cm</option>
+                                                        <option value="0.001">mm</option>
+                                                        <option value="0.0254">in</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="border-t pt-4">
                                     <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-dis-list')" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
-                                    <div id="c1-acc-dis-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
+                                    <div id="c1-acc-dis-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                         <!-- Inferred Acc for Discharge based on losses ~2.5m -->
+                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="1.9">Check Columpio</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
+                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="1.0">Salida</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -339,9 +430,16 @@
                             <div class="bg-slate-900/50 p-6 rounded-lg border border-slate-700 text-center"><div class="text-xs text-slate-400 uppercase font-bold mb-2">Potencia del Motor</div><div id="res-c1-main" class="text-4xl font-mono font-bold text-white mb-1">---</div><div id="res-c1-sub" class="text-sm text-green-400 font-bold">---</div></div>
                             <div class="space-y-3 font-mono text-sm">
                                 <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Carga Bomba (hA)</span><span class="text-white" id="res-c1-ha">---</span></div>
-                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Pérd. Succión</span><span class="text-red-300" id="res-c1-hls">---</span></div>
-                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Pérd. Descarga</span><span class="text-red-300" id="res-c1-hld">---</span></div>
-                                <div class="flex justify-between pt-1"><span class="text-slate-400">Carga Estática</span><span class="text-slate-300" id="res-c1-static">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Carga Estática</span><span class="text-slate-300" id="res-c1-static">---</span></div>
+                                
+                                <div class="border-t border-slate-700 my-2"></div>
+                                <div class="flex justify-between text-xs text-slate-400"><span>Succión:</span></div>
+                                <div class="flex justify-between pl-4 pb-1"><span class="text-slate-500">Fricción</span><span class="text-slate-300" id="res-c1-hls-fric">---</span></div>
+                                <div class="flex justify-between pl-4 pb-2 border-b border-slate-700"><span class="text-slate-500">Accesorios</span><span class="text-slate-300" id="res-c1-hls-acc">---</span></div>
+                                
+                                <div class="flex justify-between text-xs text-slate-400 mt-2"><span>Descarga:</span></div>
+                                <div class="flex justify-between pl-4 pb-1"><span class="text-slate-500">Fricción</span><span class="text-slate-300" id="res-c1-hld-fric">---</span></div>
+                                <div class="flex justify-between pl-4 pb-2 border-b border-slate-700"><span class="text-slate-500">Accesorios</span><span class="text-slate-300" id="res-c1-hld-acc">---</span></div>
                             </div>
                         </div>
                         
@@ -365,9 +463,33 @@
                         <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100 shadow-sm">
                             <h3 class="font-bold text-indigo-800 mb-5 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-bolt"></i> Energía Disponible</h3>
                             <div class="grid grid-cols-2 gap-5">
-                                <div class="input-group"><label>P. Entrada</label><div class="input-wrapper"><input type="number" id="c2-p1" value="600" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group">
+                                    <label>P. Entrada</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="c2-p1" value="600" oninput="updateClass2Available()" class="input-std has-badge">
+                                        <select id="unit-c2-p1" class="unit-select" onchange="updateClass2Available()">
+                                            <option value="1" selected>kPa</option>
+                                            <option value="0.001">Pa</option>
+                                            <option value="100">bar</option>
+                                            <option value="6.89476">psi</option>
+                                            <option value="101.325">atm</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="input-group"><label>Z1</label><div class="input-wrapper"><input type="number" id="c2-z1" value="5" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                <div class="input-group"><label>P. Salida</label><div class="input-wrapper"><input type="number" id="c2-p2" value="500" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group">
+                                    <label>P. Salida</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="c2-p2" value="500" oninput="updateClass2Available()" class="input-std has-badge">
+                                        <select id="unit-c2-p2" class="unit-select" onchange="updateClass2Available()">
+                                            <option value="1" selected>kPa</option>
+                                            <option value="0.001">Pa</option>
+                                            <option value="100">bar</option>
+                                            <option value="6.89476">psi</option>
+                                            <option value="101.325">atm</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="input-group"><label>Z2</label><div class="input-wrapper"><input type="number" id="c2-z2" value="0" oninput="updateClass2Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
                                 <div class="col-span-2 pt-4 border-t border-indigo-200">
                                     <div class="flex items-center gap-2 mb-3"><input type="checkbox" id="c2-has-pump" onchange="togglePumpInput()" class="w-5 h-5 text-indigo-600 rounded"><label for="c2-has-pump" class="text-indigo-900 text-sm font-bold">Incluir Bomba</label></div>
@@ -391,7 +513,15 @@
                                         </div>
                                         <div class="flex-1">
                                             <label>Diámetro Real (D)</label>
-                                            <div class="input-wrapper"><input type="number" id="c2-d" value="0.15" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                            <div class="input-wrapper">
+                                                <input type="number" id="c2-d" value="0.15" class="input-std has-badge">
+                                                <select id="unit-c2-d" class="unit-select">
+                                                    <option value="1" selected>m</option>
+                                                    <option value="0.01">cm</option>
+                                                    <option value="0.001">mm</option>
+                                                    <option value="0.0254">in</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -432,13 +562,49 @@
                         <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 shadow-sm">
                             <h3 class="font-bold text-emerald-800 mb-5 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-crosshairs"></i> Requerimientos</h3>
                             <div class="grid grid-cols-2 gap-5">
-                                <div class="input-group col-span-2"><label>Caudal (Q)</label><div class="input-wrapper"><input type="number" id="c3-q" value="0.06" class="input-std has-badge"><span class="unit-badge">m³/s</span></div></div>
+                                <div class="input-group col-span-2">
+                                    <label>Caudal (Q)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="c3-q" value="0.06" class="input-std has-badge">
+                                        <select id="unit-c3-q" class="unit-select">
+                                            <option value="1" selected>m³/s</option>
+                                            <option value="0.000277778">m³/h</option>
+                                            <option value="0.0000166667">L/min</option>
+                                            <option value="0.001">L/s</option>
+                                            <option value="0.00006309">GPM</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-span-2 pt-4 border-t border-emerald-200">
                                     <h5 class="text-[10px] font-bold text-emerald-700 mb-3 uppercase tracking-wide">Delta Presión/Elevación</h5>
                                     <div class="grid grid-cols-2 gap-4">
-                                        <div class="input-group"><label>P1</label><div class="input-wrapper"><input type="number" id="c3-p1" value="150" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                        <div class="input-group">
+                                            <label>P1</label>
+                                            <div class="input-wrapper">
+                                                <input type="number" id="c3-p1" value="150" oninput="updateClass3Available()" class="input-std has-badge">
+                                                <select id="unit-c3-p1" class="unit-select" onchange="updateClass3Available()">
+                                                    <option value="1" selected>kPa</option>
+                                                    <option value="0.001">Pa</option>
+                                                    <option value="100">bar</option>
+                                                    <option value="6.89476">psi</option>
+                                                    <option value="101.325">atm</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                         <div class="input-group"><label>Z1</label><div class="input-wrapper"><input type="number" id="c3-z1" value="0" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                        <div class="input-group"><label>P2</label><div class="input-wrapper"><input type="number" id="c3-p2" value="0" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                        <div class="input-group">
+                                            <label>P2</label>
+                                            <div class="input-wrapper">
+                                                <input type="number" id="c3-p2" value="0" oninput="updateClass3Available()" class="input-std has-badge">
+                                                <select id="unit-c3-p2" class="unit-select" onchange="updateClass3Available()">
+                                                    <option value="1" selected>kPa</option>
+                                                    <option value="0.001">Pa</option>
+                                                    <option value="100">bar</option>
+                                                    <option value="6.89476">psi</option>
+                                                    <option value="101.325">atm</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                         <div class="input-group"><label>Z2</label><div class="input-wrapper"><input type="number" id="c3-z2" value="0" oninput="updateClass3Available()" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
                                     </div>
                                     <div class="mt-4 bg-white p-3 rounded border border-emerald-200 text-center">
@@ -505,10 +671,34 @@
                             
                             <h3 class="font-bold text-orange-800 mb-3 flex items-center gap-2 text-sm uppercase"><i class="fa-solid fa-database"></i> Sistema</h3>
                             <div class="grid grid-cols-2 gap-5">
-                                <div class="input-group"><label>Presión Tanque (Man)</label><div class="input-wrapper"><input type="number" id="npsh-p1" value="0" class="input-std has-badge"><span class="unit-badge">kPa</span></div></div>
+                                <div class="input-group">
+                                    <label>Presión Tanque (Man)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="npsh-p1" value="0" class="input-std has-badge">
+                                        <select id="unit-npsh-p1" class="unit-select">
+                                            <option value="1" selected>kPa</option>
+                                            <option value="0.001">Pa</option>
+                                            <option value="100">bar</option>
+                                            <option value="6.89476">psi</option>
+                                            <option value="101.325">atm</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="input-group"><label>Altura Tanque (Za)</label><div class="input-wrapper"><input type="number" id="npsh-za" value="1.46" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
                                 <div class="input-group"><label>Altura Bomba (Zb)</label><div class="input-wrapper"><input type="number" id="npsh-zb" value="0" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                <div class="input-group"><label>Caudal (Q)</label><div class="input-wrapper"><input type="number" id="npsh-q" value="0.01" class="input-std has-badge"><span class="unit-badge">m³/s</span></div></div>
+                                <div class="input-group">
+                                    <label>Caudal (Q)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="npsh-q" value="0.01" class="input-std has-badge">
+                                        <select id="unit-npsh-q" class="unit-select">
+                                            <option value="1" selected>m³/s</option>
+                                            <option value="0.000277778">m³/h</option>
+                                            <option value="0.0000166667">L/min</option>
+                                            <option value="0.001">L/s</option>
+                                            <option value="0.00006309">GPM</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -527,7 +717,15 @@
                                         </div>
                                         <div class="flex-1">
                                             <label>Diámetro Real (D)</label>
-                                            <div class="input-wrapper"><input type="number" id="npsh-d" value="0.15" class="input-std has-badge"><span class="unit-badge">m</span></div>
+                                            <div class="input-wrapper">
+                                                <input type="number" id="npsh-d" value="0.15" class="input-std has-badge">
+                                                <select id="unit-npsh-d" class="unit-select">
+                                                    <option value="1" selected>m</option>
+                                                    <option value="0.01">cm</option>
+                                                    <option value="0.001">mm</option>
+                                                    <option value="0.0254">in</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -590,21 +788,22 @@
             'oil': { rho: 890, mu: 0.29, pv: 0.1 },
             'file_fluid': { rho: 674, mu: 3e-5, pv: 62.1 } 
         };
+        // Adjusted K values to Crane 410 methodology for 2" pipe (approx ft=0.019)
         const accessoriesDB = [
-            { name: "Codo 90° Estándar", k: 0.9 },
-            { name: "Codo 90° Largo", k: 0.6 },
-            { name: "Codo 45°", k: 0.4 },
-            { name: "Tee (Directo)", k: 0.2 },
-            { name: "Tee (Ramal)", k: 1.8 },
-            { name: "Válv. Compuerta", k: 0.19 },
-            { name: "Válv. Globo", k: 10.0 },
-            { name: "Check Columpio", k: 2.0 },
+            { name: "Codo 90° Estándar", k: 0.57 }, // Le/D=30 * 0.019
+            { name: "Codo 90° Largo", k: 0.38 },   // Le/D=20 * 0.019
+            { name: "Codo 45°", k: 0.3 },         // Le/D=16 * 0.019
+            { name: "Tee (Directo)", k: 0.38 },    // Le/D=20 * 0.019
+            { name: "Tee (Ramal)", k: 1.14 },      // Le/D=60 * 0.019
+            { name: "Válv. Compuerta", k: 0.15 },  // Le/D=8 * 0.019
+            { name: "Válv. Globo", k: 6.46 },      // Le/D=340 * 0.019
+            { name: "Check Columpio", k: 1.9 },    // Le/D=100 * 0.019
             { name: "Entrada (Agudo)", k: 0.5 },
             { name: "Salida", k: 1.0 }
         ];
         const pipeStandards = {
-            's40': [{nom: '1/2"', di: 0.0158}, {nom: '3/4"', di: 0.0209}, {nom: '1"', di: 0.0266}, {nom: '1 1/4"', di: 0.0351}, {nom: '1 1/2"', di: 0.0409}, {nom: '2"', di: 0.0525}, {nom: '2 1/2"', di: 0.0627}, {nom: '3"', di: 0.0779}, {nom: '4"', di: 0.1023}, {nom: '6"', di: 0.1541}, {nom: '8"', di: 0.2027}, {nom: '10"', di: 0.2545}],
-            's80': [{nom: '1/2"', di: 0.0139}, {nom: '3/4"', di: 0.0189}, {nom: '1"', di: 0.0243}, {nom: '1 1/4"', di: 0.0325}, {nom: '1 1/2"', di: 0.0381}, {nom: '2"', di: 0.0493}, {nom: '3"', di: 0.0737}, {nom: '4"', di: 0.0972}, {nom: '6"', di: 0.1463}],
+            's40': [{nom: '1/2"', di: 0.0158}, {nom: '3/4"', di: 0.0209}, {nom: '1"', di: 0.0266}, {nom: '1 1/4"', di: 0.0351}, {nom: '1 1/2"', di: 0.0409}, {nom: '2"', di: 0.0525}, {nom: '2 1/2"', di: 0.0627}, {nom: '3"', di: 0.0779}, {nom: '4"', di: 0.1023}, {nom: '5"', di: 0.1282}, {nom: '6"', di: 0.1541}, {nom: '8"', di: 0.2027}, {nom: '10"', di: 0.2545}],
+            's80': [{nom: '1/2"', di: 0.0139}, {nom: '3/4"', di: 0.0189}, {nom: '1"', di: 0.0243}, {nom: '1 1/4"', di: 0.0325}, {nom: '1 1/2"', di: 0.0381}, {nom: '2"', di: 0.0493}, {nom: '2 1/2"', di: 0.0590}, {nom: '3"', di: 0.0737}, {nom: '4"', di: 0.0972}, {nom: '5"', di: 0.1223}, {nom: '6"', di: 0.1463}],
             'copperK': [{nom: '1/2"', di: 0.0134}, {nom: '3/4"', di: 0.0199}, {nom: '1"', di: 0.0260}, {nom: '1 1/4"', di: 0.0321}, {nom: '1 1/2"', di: 0.0382}, {nom: '2"', di: 0.0504}]
         };
 
@@ -658,14 +857,17 @@
                 if (fluids[val]) { 
                     document.getElementById('rho').value = fluids[val].rho; 
                     document.getElementById('mu').value = fluids[val].mu;
-                    document.getElementById('pv').value = fluids[val].pv; 
+                    document.getElementById('pv').value = fluids[val].pv;
+                    document.getElementById('unit-pv').value = "1"; // Reset unit to kPa default
                 }
                 if (val === 'file_fluid') {
                     document.getElementById('patm').value = 100.5;
+                    document.getElementById('unit-patm').value = "1";
                     document.getElementById('npsh-za').value = 1.46;
                     document.getElementById('npsh-q').value = 0.01; 
                 } else if (val === 'water20') {
                     document.getElementById('patm').value = 101.325;
+                    document.getElementById('unit-patm').value = "1";
                 }
             }
         }
@@ -676,14 +878,23 @@
             const sel = document.getElementById('fluid-preset'); return sel.options[sel.selectedIndex].text;
         }
 
+        // --- NEW UNIT CONVERSION HELPER ---
+        // Reads value from input and multiplies by the selected unit factor to return SI Base (m3/s or kPa)
+        function getVal(id) {
+            const inputEl = document.getElementById(id);
+            if (!inputEl) return 0;
+            const val = parseFloat(inputEl.value);
+            const unitEl = document.getElementById('unit-' + id);
+            const factor = unitEl ? parseFloat(unitEl.value) : 1;
+            return val * factor;
+        }
+
         function togglePumpInput() {
             const c = document.getElementById('c2-has-pump').checked;
             document.getElementById('c2-pump-container').classList.toggle('hidden', !c);
             if(!c) document.getElementById('c2-pump-head').value = 0;
             updateClass2Available();
         }
-
-        // --- NEW LOGIC: CUSTOM ACCESSORY ---
 
         function toggleCustomAccessory(selectEl) {
             const row = selectEl.parentElement;
@@ -699,12 +910,10 @@
         function addAccessory(listId) {
             const list = document.getElementById(listId);
             const div = document.createElement('div');
-            // Changed from block to flex for better alignment
             div.className = "flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1";
             
             let opts = accessoriesDB.map(a => `<option value="${a.k}">${a.name}</option>`).join('');
             
-            // New structure supporting custom input
             div.innerHTML = `
                 <input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1">
                 
@@ -729,13 +938,10 @@
                 const qty = parseFloat(row.querySelector('.acc-qty').value) || 0;
                 const select = row.querySelector('.acc-select');
                 let kVal = 0;
-                
-                // Logic to check if we are in custom mode or standard mode
                 if (select && !select.classList.contains('hidden')) {
-                     kVal = parseFloat(select.value) || 0;
+                      kVal = parseFloat(select.value) || 0;
                 } else {
-                     // Custom mode
-                     kVal = parseFloat(row.querySelector('.acc-custom-k').value) || 0;
+                      kVal = parseFloat(row.querySelector('.acc-custom-k').value) || 0;
                 }
                 kTotal += qty * kVal;
             });
@@ -743,7 +949,9 @@
         }
 
         function updateClass2Available() {
-            const p1=parseFloat(document.getElementById('c2-p1').value)*1000, p2=parseFloat(document.getElementById('c2-p2').value)*1000, z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0, rho=parseFloat(document.getElementById('rho').value);
+            // Using getVal for unit conversion
+            const p1=getVal('c2-p1')*1000, p2=getVal('c2-p2')*1000;
+            const z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0, rho=parseFloat(document.getElementById('rho').value);
             const h = ((p1-p2)/(rho*9.81)) + (z1-z2) + hp;
             const d = document.getElementById('c2-total-energy');
             d.innerText = h.toFixed(2)+" m";
@@ -751,7 +959,9 @@
         }
 
         function updateClass3Available() {
-            const p1=parseFloat(document.getElementById('c3-p1').value)*1000, p2=parseFloat(document.getElementById('c3-p2').value)*1000, z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value), rho=parseFloat(document.getElementById('rho').value);
+             // Using getVal for unit conversion
+            const p1=getVal('c3-p1')*1000, p2=getVal('c3-p2')*1000;
+            const z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value), rho=parseFloat(document.getElementById('rho').value);
             const h = ((p1-p2)/(rho*9.81)) + (z1-z2);
             const d = document.getElementById('c3-hl-disp');
             d.innerText = h.toFixed(3)+" m";
@@ -792,7 +1002,12 @@
             const val = selectEl.value;
             if (val === '-') return;
             const targetInput = document.getElementById(targetId);
-            if(targetInput) { targetInput.value = val; }
+            // If selecting standard diameter, we force unit to 'm' (value 1) because standard list is in meters
+            if(targetInput) { 
+                targetInput.value = val; 
+                const unitSel = document.getElementById('unit-' + targetId);
+                if(unitSel) unitSel.value = "1"; // Force to meters
+            }
         }
         
         function populateStdSelectors() {
@@ -997,13 +1212,22 @@
             try {
                 // CLASE I
                 if(currentSection==='class1') {
-                    const Q=parseFloat(document.getElementById('c1-q').value), eff=parseFloat(document.getElementById('c1-eff').value)/100;
-                    const p1=parseFloat(document.getElementById('c1-p1').value)*1000, p2=parseFloat(document.getElementById('c1-p2').value)*1000, z1=parseFloat(document.getElementById('c1-z1').value), z2=parseFloat(document.getElementById('c1-z2').value);
-                    const Ls=parseFloat(document.getElementById('c1-l-suc').value), Ds=parseFloat(document.getElementById('c1-d-suc').value), es=parseFloat(document.getElementById('c1-mat-suc').value), Ks=getAccessoriesK('c1-acc-suc-list');
-                    const Ld=parseFloat(document.getElementById('c1-l-dis').value), Dd=parseFloat(document.getElementById('c1-d-dis').value), ed=parseFloat(document.getElementById('c1-mat-dis').value), Kd=getAccessoriesK('c1-acc-dis-list');
+                    // Use getVal for inputs with units
+                    const Q=getVal('c1-q'), eff=parseFloat(document.getElementById('c1-eff').value)/100;
+                    const p1=getVal('c1-p1')*1000, p2=getVal('c1-p2')*1000;
+                    const z1=parseFloat(document.getElementById('c1-z1').value), z2=parseFloat(document.getElementById('c1-z2').value);
+                    const Ls=parseFloat(document.getElementById('c1-l-suc').value), Ds=getVal('c1-d-suc'), es=parseFloat(document.getElementById('c1-mat-suc').value), Ks=getAccessoriesK('c1-acc-suc-list');
+                    const Ld=parseFloat(document.getElementById('c1-l-dis').value), Dd=getVal('c1-d-dis'), ed=parseFloat(document.getElementById('c1-mat-dis').value), Kd=getAccessoriesK('c1-acc-dis-list');
                     
-                    const As=Math.PI*Ds**2/4, vs=Q/As, Res=(vs*Ds)/nu, fs=0.25/Math.pow(Math.log10((es/(3.7*Ds))+(5.74/Math.pow(Res,0.9))),2), hLs=(fs*(Ls/Ds)+Ks)*(vs**2/(2*g));
-                    const Ad=Math.PI*Dd**2/4, vd=Q/Ad, Red=(vd*Dd)/nu, fd=0.25/Math.pow(Math.log10((ed/(3.7*Dd))+(5.74/Math.pow(Red,0.9))),2), hLd=(fd*(Ld/Dd)+Kd)*(vd**2/(2*g));
+                    const As=Math.PI*Ds**2/4, vs=Q/As, Res=(vs*Ds)/nu, fs=0.25/Math.pow(Math.log10((es/(3.7*Ds))+(5.74/Math.pow(Res,0.9))),2);
+                    const hLs_fric = (fs*(Ls/Ds))*(vs**2/(2*g));
+                    const hLs_acc = Ks*(vs**2/(2*g));
+                    const hLs = hLs_fric + hLs_acc;
+
+                    const Ad=Math.PI*Dd**2/4, vd=Q/Ad, Red=(vd*Dd)/nu, fd=0.25/Math.pow(Math.log10((ed/(3.7*Dd))+(5.74/Math.pow(Red,0.9))),2);
+                    const hLd_fric = (fd*(Ld/Dd))*(vd**2/(2*g));
+                    const hLd_acc = Kd*(vd**2/(2*g));
+                    const hLd = hLd_fric + hLd_acc;
                     
                     const hA=((p2-p1)/(rho*g))+(z2-z1)+(hLs+hLd);
                     const staticHead = ((p2-p1)/(rho*g))+(z2-z1);
@@ -1012,9 +1236,13 @@
                     document.getElementById('res-c1-main').innerText = (Pb/1000).toFixed(2)+" kW";
                     document.getElementById('res-c1-sub').innerText = (Pb/745.7).toFixed(2)+" HP";
                     document.getElementById('res-c1-ha').innerText = hA.toFixed(2)+" m";
-                    document.getElementById('res-c1-hls').innerText = hLs.toFixed(2)+" m";
-                    document.getElementById('res-c1-hld').innerText = hLd.toFixed(2)+" m";
                     document.getElementById('res-c1-static').innerText = staticHead.toFixed(2)+" m";
+                    
+                    document.getElementById('res-c1-hls-fric').innerText = hLs_fric.toFixed(2)+" m";
+                    document.getElementById('res-c1-hls-acc').innerText = hLs_acc.toFixed(2)+" m";
+                    document.getElementById('res-c1-hld-fric').innerText = hLd_fric.toFixed(2)+" m";
+                    document.getElementById('res-c1-hld-acc').innerText = hLd_acc.toFixed(2)+" m";
+
                     
                     const analysisDiv = document.getElementById('c1-analysis');
                     let analysisHTML = `<div class="analysis-title"><i class="fa-solid fa-microscope"></i> Análisis Técnico</div>`;
@@ -1033,8 +1261,9 @@
 
                 // CLASE II
                 if(currentSection==='class2') {
-                    const L=parseFloat(document.getElementById('c2-l').value), D=parseFloat(document.getElementById('c2-d').value), e=parseFloat(document.getElementById('c2-mat').value), K=getAccessoriesK('c2-acc-list');
-                    const p1=parseFloat(document.getElementById('c2-p1').value)*1000, p2=parseFloat(document.getElementById('c2-p2').value)*1000, z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0;
+                    const L=parseFloat(document.getElementById('c2-l').value), D=getVal('c2-d'), e=parseFloat(document.getElementById('c2-mat').value), K=getAccessoriesK('c2-acc-list');
+                    const p1=getVal('c2-p1')*1000, p2=getVal('c2-p2')*1000;
+                    const z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0;
                     const ha=((p1-p2)/(rho*g))+(z1-z2)+hp;
                     if(ha<=0) throw "Energía disponible insuficiente (<= 0)";
                     
@@ -1068,8 +1297,9 @@
 
                 // CLASE III
                 if(currentSection==='class3') {
-                    const Q=parseFloat(document.getElementById('c3-q').value), L=parseFloat(document.getElementById('c3-l').value), e=parseFloat(document.getElementById('c3-eps').value), std=document.getElementById('c3-std-type').value;
-                    const p1=parseFloat(document.getElementById('c3-p1').value)*1000, p2=parseFloat(document.getElementById('c3-p2').value)*1000, z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value);
+                    const Q=getVal('c3-q'), L=parseFloat(document.getElementById('c3-l').value), e=parseFloat(document.getElementById('c3-eps').value), std=document.getElementById('c3-std-type').value;
+                    const p1=getVal('c3-p1')*1000, p2=getVal('c3-p2')*1000;
+                    const z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value);
                     const K = getAccessoriesK('c3-acc-list'); 
                     const hl=((p1-p2)/(rho*g))+(z1-z2);
                     if(hl<=0) throw "Pérdida disponible <= 0. Revise presiones.";
@@ -1125,16 +1355,16 @@
 
                 // NPSH CALC & OPTIMIZATION
                 if(currentSection==='npsh') {
-                    const Q=parseFloat(document.getElementById('npsh-q').value);
-                    const p_tank=parseFloat(document.getElementById('npsh-p1').value)*1000;
+                    const Q=getVal('npsh-q');
+                    const p_tank=getVal('npsh-p1')*1000;
                     const za=parseFloat(document.getElementById('npsh-za').value);
                     const zb=parseFloat(document.getElementById('npsh-zb').value);
                     const L=parseFloat(document.getElementById('npsh-l').value);
-                    const D=parseFloat(document.getElementById('npsh-d').value);
+                    const D=getVal('npsh-d');
                     const e=parseFloat(document.getElementById('npsh-mat').value);
                     const K=getAccessoriesK('npsh-acc-list');
-                    const pv=parseFloat(document.getElementById('pv').value)*1000;
-                    const patm=parseFloat(document.getElementById('patm').value)*1000;
+                    const pv=getVal('pv')*1000;
+                    const patm=getVal('patm')*1000;
                     const npsh_req = parseFloat(document.getElementById('npsh-req').value);
                     const safety_factor = parseFloat(document.getElementById('npsh-safety').value);
 

@@ -376,13 +376,8 @@
                                     </div>
                                 </div>
                                 <div class="border-t pt-4">
-                                    <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-suc-list')" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
-                                    <div id="c1-acc-suc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                                         <!-- Default Acc updated to new K values -->
-                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="0.5">Entrada (Agudo)</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
-                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="2" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="0.57">Codo 90° Estándar</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
-                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="6.46">Válv. Globo</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
-                                    </div>
+                                    <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-suc-list', 0, 1)" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
+                                    <div id="c1-acc-suc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
                                 </div>
                             </div>
                             <div id="pipe-discharge" class="p-6 space-y-5 hidden flex-1">
@@ -413,12 +408,8 @@
                                     </div>
                                 </div>
                                 <div class="border-t pt-4">
-                                    <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-dis-list')" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
-                                    <div id="c1-acc-dis-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                                         <!-- Inferred Acc for Discharge based on losses ~2.5m -->
-                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="1.9">Check Columpio</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
-                                        <div class="flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1"><input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1"><select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)"><option value="1.0">Salida</option></select><button onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 px-2"><i class="fa-solid fa-times"></i></button></div>
-                                    </div>
+                                    <div class="flex justify-between items-center mb-2"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c1-acc-dis-list', 0, 1)" class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold hover:bg-blue-200 transition">+ Agregar</button></div>
+                                    <div id="c1-acc-dis-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
                                 </div>
                             </div>
                         </div>
@@ -527,7 +518,7 @@
                                 </div>
                             </div>
                             <div class="border-t border-slate-100 pt-4">
-                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c2-acc-list')" class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-1 rounded font-bold hover:bg-indigo-200 transition">+ Agregar</button></div>
+                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c2-acc-list', 0, 1)" class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-1 rounded font-bold hover:bg-indigo-200 transition">+ Agregar</button></div>
                                 <div id="c2-acc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
                             </div>
                         </div>
@@ -624,7 +615,7 @@
                             </div>
                             <!-- SECCIÓN DE ACCESORIOS -->
                             <div class="border-t border-slate-100 pt-4">
-                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c3-acc-list')" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold hover:bg-emerald-200 transition">+ Agregar</button></div>
+                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('c3-acc-list', 0, 1)" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold hover:bg-emerald-200 transition">+ Agregar</button></div>
                                 <div id="c3-acc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
                             </div>
                         </div>
@@ -731,7 +722,7 @@
                                 </div>
                             </div>
                             <div class="border-t border-slate-100 pt-4">
-                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('npsh-acc-list')" class="text-[10px] bg-orange-100 text-orange-700 px-2 py-1 rounded font-bold hover:bg-orange-200 transition">+ Agregar</button></div>
+                                <div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-500 uppercase">Accesorios</label><button onclick="addAccessory('npsh-acc-list', 0, 1)" class="text-[10px] bg-orange-100 text-orange-700 px-2 py-1 rounded font-bold hover:bg-orange-200 transition">+ Agregar</button></div>
                                 <div id="npsh-acc-list" class="space-y-2 max-h-40 overflow-y-auto pr-1"></div>
                             </div>
                         </div>
@@ -751,7 +742,7 @@
                                 </div>
                             </div>
                             <div class="space-y-3 font-mono text-sm">
-                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Presión Atm (m)</span><span class="text-white" id="res-npsh-hatm">---</span></div>
+                                <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Carga de presión absoluta (m)</span><span class="text-white" id="res-npsh-habs">---</span></div>
                                 <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Carga Estática (Z)</span><span class="text-white" id="res-npsh-z">---</span></div>
                                 <div class="flex justify-between border-b border-slate-700 pb-2"><span class="text-slate-400">Pérdidas Succión</span><span class="text-red-400" id="res-npsh-hl">---</span></div>
                                 <div class="flex justify-between pt-1"><span class="text-slate-400">Presión Vapor (m)</span><span class="text-yellow-400" id="res-npsh-hvp">---</span></div>
@@ -781,31 +772,64 @@
         let isMobileMenuOpen = false;
 
         // --- DATA ---
-        // Added Vapor Pressure (pv) in kPa
+        // Fluid Properties
         const fluids = {
             'water20': { rho: 998, mu: 1.002e-3, pv: 2.34 },
             'water80': { rho: 971, mu: 0.355e-3, pv: 47.4 },
             'oil': { rho: 890, mu: 0.29, pv: 0.1 },
             'file_fluid': { rho: 674, mu: 3e-5, pv: 62.1 } 
         };
-        // Adjusted K values to Crane 410 methodology for 2" pipe (approx ft=0.019)
+        
+        // Base de Datos de Accesorios: 
+        // Si isLeD es true, val representa (Le/D). K local = fT * (Le/D).
+        // Si isLeD es false, val representa K directo (Entradas/Salidas tanque).
         const accessoriesDB = [
-            { name: "Codo 90° Estándar", k: 0.57 }, // Le/D=30 * 0.019
-            { name: "Codo 90° Largo", k: 0.38 },   // Le/D=20 * 0.019
-            { name: "Codo 45°", k: 0.3 },         // Le/D=16 * 0.019
-            { name: "Tee (Directo)", k: 0.38 },    // Le/D=20 * 0.019
-            { name: "Tee (Ramal)", k: 1.14 },      // Le/D=60 * 0.019
-            { name: "Válv. Compuerta", k: 0.15 },  // Le/D=8 * 0.019
-            { name: "Válv. Globo", k: 6.46 },      // Le/D=340 * 0.019
-            { name: "Check Columpio", k: 1.9 },    // Le/D=100 * 0.019
-            { name: "Entrada (Agudo)", k: 0.5 },
-            { name: "Salida", k: 1.0 }
+            { name: "Codo 90° Estándar (Roscado)", val: 50, isLeD: true },
+            { name: "Codo 90° Estándar (Bridado/Soldado)", val: 30, isLeD: true },
+            { name: "Codo 90° Radio Largo", val: 20, isLeD: true },
+            { name: "Codo 45° Estándar", val: 16, isLeD: true },
+            { name: "Tee (Flujo Directo)", val: 20, isLeD: true },
+            { name: "Tee (Flujo por Ramal)", val: 60, isLeD: true },
+            { name: "Válv. Compuerta (Abierta por completo)", val: 8, isLeD: true },
+            { name: "Válv. Globo (Abierta por completo)", val: 340, isLeD: true },
+            { name: "Válv. Ángulo (Abierta por completo)", val: 150, isLeD: true },
+            { name: "Válv. Bola (Paso total)", val: 3, isLeD: true },
+            { name: "Válv. Mariposa (2\" a 8\")", val: 45, isLeD: true },
+            { name: "Check Columpio (Giratoria)", val: 100, isLeD: true },
+            { name: "Válv. Pie con Filtro (Vástago)", val: 420, isLeD: true },
+            { name: "Válv. Pie con Filtro (Bisagra)", val: 75, isLeD: true },
+            { name: "Entrada (Borde Agudo)", val: 0.5, isLeD: false }, 
+            { name: "Entrada (Ligeramente redondeada)", val: 0.23, isLeD: false },
+            { name: "Salida (Pérdida total)", val: 1.0, isLeD: false }
         ];
+
         const pipeStandards = {
             's40': [{nom: '1/2"', di: 0.0158}, {nom: '3/4"', di: 0.0209}, {nom: '1"', di: 0.0266}, {nom: '1 1/4"', di: 0.0351}, {nom: '1 1/2"', di: 0.0409}, {nom: '2"', di: 0.0525}, {nom: '2 1/2"', di: 0.0627}, {nom: '3"', di: 0.0779}, {nom: '4"', di: 0.1023}, {nom: '5"', di: 0.1282}, {nom: '6"', di: 0.1541}, {nom: '8"', di: 0.2027}, {nom: '10"', di: 0.2545}],
             's80': [{nom: '1/2"', di: 0.0139}, {nom: '3/4"', di: 0.0189}, {nom: '1"', di: 0.0243}, {nom: '1 1/4"', di: 0.0325}, {nom: '1 1/2"', di: 0.0381}, {nom: '2"', di: 0.0493}, {nom: '2 1/2"', di: 0.0590}, {nom: '3"', di: 0.0737}, {nom: '4"', di: 0.0972}, {nom: '5"', di: 0.1223}, {nom: '6"', di: 0.1463}],
             'copperK': [{nom: '1/2"', di: 0.0134}, {nom: '3/4"', di: 0.0199}, {nom: '1"', di: 0.0260}, {nom: '1 1/4"', di: 0.0321}, {nom: '1 1/2"', di: 0.0382}, {nom: '2"', di: 0.0504}]
         };
+
+        function initDefaults() {
+            loadFluid();
+            populateStdSelectors();
+            // Inyectamos accesorios por defecto para mostrar las listas no vacías
+            addAccessory('c1-acc-suc-list', 14, 1); // Entrada Borde Agudo
+            addAccessory('c1-acc-suc-list', 0, 2);  // Codo 90 estandar roscado x2
+            addAccessory('c1-acc-suc-list', 7, 1);  // Válvula Globo
+            addAccessory('c1-acc-dis-list', 11, 1); // Check Columpio
+            addAccessory('c1-acc-dis-list', 16, 1); // Salida
+            
+            addAccessory('c2-acc-list', 14, 1); // Entrada
+            addAccessory('c2-acc-list', 0, 4);  // Codos
+            addAccessory('c2-acc-list', 16, 1); // Salida
+            
+            addAccessory('c3-acc-list', 14, 1);
+            addAccessory('c3-acc-list', 0, 3);
+            addAccessory('c3-acc-list', 16, 1);
+
+            addAccessory('npsh-acc-list', 13, 1); // Válv. Pie con Filtro (Bisagra)
+            addAccessory('npsh-acc-list', 0, 1);  // Codo 90
+        }
 
         function toggleMobileMenu() {
             const sidebar = document.getElementById('sidebar');
@@ -879,7 +903,6 @@
         }
 
         // --- NEW UNIT CONVERSION HELPER ---
-        // Reads value from input and multiplies by the selected unit factor to return SI Base (m3/s or kPa)
         function getVal(id) {
             const inputEl = document.getElementById(id);
             if (!inputEl) return 0;
@@ -907,19 +930,19 @@
             }
         }
 
-        function addAccessory(listId) {
+        function addAccessory(listId, defaultIndex = 0, defaultQty = 1) {
             const list = document.getElementById(listId);
             const div = document.createElement('div');
             div.className = "flex items-center gap-1 acc-row bg-slate-50 p-1 rounded border border-slate-100 mb-1";
             
-            let opts = accessoriesDB.map(a => `<option value="${a.k}">${a.name}</option>`).join('');
+            let opts = accessoriesDB.map((a, i) => `<option value="${i}" ${i === defaultIndex ? 'selected' : ''}>${a.name} ${a.isLeD ? '(Le/D='+a.val+')' : '(K='+a.val+')'}</option>`).join('');
             
             div.innerHTML = `
-                <input type="number" value="1" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1">
+                <input type="number" value="${defaultQty}" class="w-8 p-1 text-[10px] border rounded text-center acc-qty" min="1">
                 
-                <select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white" onchange="toggleCustomAccessory(this)">
+                <select class="flex-1 p-1 text-[10px] border rounded acc-select bg-white truncate" onchange="toggleCustomAccessory(this)" title="Seleccione accesorio">
                     ${opts}
-                    <option value="custom" class="font-bold text-blue-600 bg-blue-50">+ Otro (Manual)</option>
+                    <option value="custom" class="font-bold text-blue-600 bg-blue-50">+ Otro K (Manual)</option>
                 </select>
                 
                 <div class="hidden flex-1 gap-1 custom-inputs">
@@ -932,24 +955,31 @@
             list.appendChild(div);
         }
 
-        function getAccessoriesK(listId) {
-            let kTotal = 0;
+        // --- MANEJO DE ACCESORIOS Y fT ---
+        function getAccessoriesSum(listId) {
+            let sumLeD = 0;
+            let sumK = 0;
             document.querySelectorAll(`#${listId} .acc-row`).forEach(row => {
                 const qty = parseFloat(row.querySelector('.acc-qty').value) || 0;
                 const select = row.querySelector('.acc-select');
-                let kVal = 0;
                 if (select && !select.classList.contains('hidden')) {
-                      kVal = parseFloat(select.value) || 0;
+                    if (select.value === 'custom') {
+                        sumK += qty * (parseFloat(row.querySelector('.acc-custom-k').value) || 0);
+                    } else {
+                        const acc = accessoriesDB[select.value];
+                        if (acc) {
+                            if (acc.isLeD) sumLeD += qty * acc.val;
+                            else sumK += qty * acc.val;
+                        }
+                    }
                 } else {
-                      kVal = parseFloat(row.querySelector('.acc-custom-k').value) || 0;
+                    sumK += qty * (parseFloat(row.querySelector('.acc-custom-k').value) || 0);
                 }
-                kTotal += qty * kVal;
             });
-            return kTotal;
+            return { sumLeD, sumK };
         }
 
         function updateClass2Available() {
-            // Using getVal for unit conversion
             const p1=getVal('c2-p1')*1000, p2=getVal('c2-p2')*1000;
             const z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0, rho=parseFloat(document.getElementById('rho').value);
             const h = ((p1-p2)/(rho*9.81)) + (z1-z2) + hp;
@@ -959,7 +989,6 @@
         }
 
         function updateClass3Available() {
-             // Using getVal for unit conversion
             const p1=getVal('c3-p1')*1000, p2=getVal('c3-p2')*1000;
             const z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value), rho=parseFloat(document.getElementById('rho').value);
             const h = ((p1-p2)/(rho*9.81)) + (z1-z2);
@@ -997,12 +1026,10 @@
             return recs.map(r => `<div class="mb-1"><span class="rec-tag">Válvulas</span>${r}</div>`).join('');
         }
         
-        // --- HELPER FOR NOMINAL DIAMETER ---
         function applyStdDiameter(selectEl, targetId) {
             const val = selectEl.value;
             if (val === '-') return;
             const targetInput = document.getElementById(targetId);
-            // If selecting standard diameter, we force unit to 'm' (value 1) because standard list is in meters
             if(targetInput) { 
                 targetInput.value = val; 
                 const unitSel = document.getElementById('unit-' + targetId);
@@ -1022,23 +1049,17 @@
             const h = ctx.canvas.height;
             ctx.clearRect(0, 0, w, h);
             
-            // Layout Params
             const margin = 50;
             const pumpX = w * 0.4;
-            const pumpY = h * 0.7; // Base reference for Z=0 (approx)
+            const pumpY = h * 0.7;
             
-            // Map Elevations (Schematic scale)
-            // If z1 > z2, tank is higher. Map visual Z.
-            // visualY = pumpY - (realZ * scaleFactor)
-            const scaleZ = 5; // Pixels per meter (schematic)
+            const scaleZ = 5;
             const y1 = pumpY - (z1 * scaleZ);
             const y2 = pumpY - (z2 * scaleZ);
             
-            // Pipe Thickness
-            const thickSuc = Math.max(2, d_suc * 40); // Exaggerated
+            const thickSuc = Math.max(2, d_suc * 40);
             const thickDis = Math.max(2, d_dis * 40);
 
-            // Draw Suction Tank
             const tankW = 60; const tankH = 80;
             const tankX = margin;
             const tankY = y1 - tankH;
@@ -1047,20 +1068,17 @@
             ctx.strokeStyle = "#475569";
             ctx.lineWidth = 2;
             
-            // Tank Body
             ctx.beginPath();
             ctx.rect(tankX, tankY, tankW, tankH);
             ctx.fill();
             ctx.stroke();
             
-            // Tank Lid (Pressurized or Open)
             if (p1 > 0) {
                  ctx.beginPath();
-                 ctx.ellipse(tankX + tankW/2, tankY, tankW/2, 10, 0, Math.PI, 0); // Dome
+                 ctx.ellipse(tankX + tankW/2, tankY, tankW/2, 10, 0, Math.PI, 0);
                  ctx.stroke();
                  ctx.fillStyle = "#cbd5e1"; ctx.fill();
             } else {
-                 // Water surface
                  ctx.beginPath();
                  ctx.moveTo(tankX + 5, tankY + 20);
                  ctx.lineTo(tankX + tankW - 5, tankY + 20);
@@ -1068,7 +1086,6 @@
                  ctx.strokeStyle = "#475569";
             }
 
-            // Draw Pump
             ctx.fillStyle = "#ef4444";
             ctx.beginPath();
             ctx.arc(pumpX, pumpY, 15, 0, 2*Math.PI);
@@ -1077,28 +1094,25 @@
             ctx.font = "bold 16px Arial";
             ctx.fillText("P", pumpX-6, pumpY+5);
 
-            // Draw Suction Pipe
             ctx.strokeStyle = "#64748b";
             ctx.lineWidth = thickSuc;
             ctx.beginPath();
-            ctx.moveTo(tankX + tankW, tankY + tankH - 10); // Out of tank
-            ctx.lineTo(pumpX - 15, pumpY); // To pump
+            ctx.moveTo(tankX + tankW, tankY + tankH - 10);
+            ctx.lineTo(pumpX - 15, pumpY);
             ctx.stroke();
             
-            // Draw Discharge Pipe
             ctx.lineWidth = thickDis;
             ctx.beginPath();
             ctx.moveTo(pumpX + 15, pumpY);
-            ctx.lineTo(pumpX + 15 + 50, pumpY); // Short horiz
-            ctx.lineTo(pumpX + 15 + 50, y2); // Vert up/down
-            ctx.lineTo(w - margin - tankW, y2); // Horiz to dest
+            ctx.lineTo(pumpX + 15 + 50, pumpY);
+            ctx.lineTo(pumpX + 15 + 50, y2);
+            ctx.lineTo(w - margin - tankW, y2);
             ctx.stroke();
 
-            // Destination
             const destX = w - margin - tankW;
             const destY = y2 - tankH/2;
             
-            if (p2 > 20000 || z2 > 0) { // Assume tank if high pressure or height defined
+            if (p2 > 20000 || z2 > 0) {
                  ctx.lineWidth = 2;
                  ctx.fillStyle = "#e2e8f0";
                  ctx.beginPath();
@@ -1106,7 +1120,6 @@
                  ctx.fill();
                  ctx.stroke();
             } else {
-                // Free jet / Nozzle
                  ctx.fillStyle = "#3b82f6";
                  ctx.beginPath();
                  ctx.moveTo(destX, y2 - 5);
@@ -1116,7 +1129,6 @@
                  ctx.fill();
             }
 
-            // Labels
             ctx.fillStyle = "#0f172a";
             ctx.font = "10px Inter";
             ctx.fillText(`L=${l_suc}m`, (tankX + pumpX)/2, (tankY + tankH + pumpY)/2 - 10);
@@ -1126,23 +1138,21 @@
         }
 
         function drawSystemNPSH(ctx, za, zb, l, d, p_tank) {
-             const w = ctx.canvas.width;
+            const w = ctx.canvas.width;
             const h = ctx.canvas.height;
             ctx.clearRect(0, 0, w, h);
             
             const margin = 50;
             const pumpX = w * 0.6;
-            const pumpY = h * 0.5; // Base ref
+            const pumpY = h * 0.5;
             
-            // Scale
-            const scaleZ = 20; // More detail for NPSH
+            const scaleZ = 20;
             const y_tank = pumpY - ((za - zb) * scaleZ);
             
-            // Tank
             const tankW = 80; const tankH = 100;
             const tankX = margin;
             
-            ctx.fillStyle = "#ffedd5"; // Orange tint
+            ctx.fillStyle = "#ffedd5";
             ctx.strokeStyle = "#ea580c";
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -1150,7 +1160,6 @@
             ctx.fill();
             ctx.stroke();
             
-            // Lid if pressurized
             if (p_tank > 0) {
                  ctx.beginPath();
                  ctx.moveTo(tankX, y_tank - tankH);
@@ -1159,31 +1168,26 @@
                  ctx.fillStyle="#c2410c"; ctx.fillText("P>0", tankX+30, y_tank-tankH-5);
             } else {
                  ctx.fillStyle="#3b82f6"; 
-                 ctx.fillRect(tankX+5, y_tank-30, tankW-10, 20); // Water
+                 ctx.fillRect(tankX+5, y_tank-30, tankW-10, 20);
                  ctx.fillStyle="#64748b"; ctx.fillText("Patm", tankX+25, y_tank-tankH-5);
             }
 
-            // Pump
             ctx.fillStyle = "#ea580c";
             ctx.beginPath();
             ctx.arc(pumpX, pumpY, 20, 0, 2*Math.PI);
             ctx.fill();
             ctx.fillStyle = "white"; ctx.fillText("P", pumpX-5, pumpY+5);
 
-            // Pipe
             ctx.strokeStyle = "#9a3412";
             ctx.lineWidth = Math.max(3, d*50);
             ctx.beginPath();
             ctx.moveTo(tankX + tankW, y_tank - 10);
-            // If tank is low, pipe goes up. If tank high, pipe goes down/straight.
             ctx.lineTo(pumpX - 20, pumpY);
             ctx.stroke();
 
-            // Valves/Acc
             const midX = (tankX + tankW + pumpX)/2;
             const midY = (y_tank - 10 + pumpY)/2;
             
-            // Draw a generic valve symbol
             ctx.fillStyle = "#475569";
             ctx.beginPath();
             ctx.moveTo(midX, midY);
@@ -1194,7 +1198,6 @@
             ctx.lineTo(midX+5, midY+5);
             ctx.fill();
 
-            // Labels
             ctx.fillStyle = "#0f172a";
             ctx.font = "12px Inter";
             ctx.fillText(`Za=${za}m`, tankX, y_tank + 15);
@@ -1212,19 +1215,30 @@
             try {
                 // CLASE I
                 if(currentSection==='class1') {
-                    // Use getVal for inputs with units
                     const Q=getVal('c1-q'), eff=parseFloat(document.getElementById('c1-eff').value)/100;
                     const p1=getVal('c1-p1')*1000, p2=getVal('c1-p2')*1000;
                     const z1=parseFloat(document.getElementById('c1-z1').value), z2=parseFloat(document.getElementById('c1-z2').value);
-                    const Ls=parseFloat(document.getElementById('c1-l-suc').value), Ds=getVal('c1-d-suc'), es=parseFloat(document.getElementById('c1-mat-suc').value), Ks=getAccessoriesK('c1-acc-suc-list');
-                    const Ld=parseFloat(document.getElementById('c1-l-dis').value), Dd=getVal('c1-d-dis'), ed=parseFloat(document.getElementById('c1-mat-dis').value), Kd=getAccessoriesK('c1-acc-dis-list');
+                    const Ls=parseFloat(document.getElementById('c1-l-suc').value), Ds=getVal('c1-d-suc'), es=parseFloat(document.getElementById('c1-mat-suc').value);
+                    const Ld=parseFloat(document.getElementById('c1-l-dis').value), Dd=getVal('c1-d-dis'), ed=parseFloat(document.getElementById('c1-mat-dis').value);
                     
-                    const As=Math.PI*Ds**2/4, vs=Q/As, Res=(vs*Ds)/nu, fs=0.25/Math.pow(Math.log10((es/(3.7*Ds))+(5.74/Math.pow(Res,0.9))),2);
+                    // Succión - Cálculo del K total dinámico basado en fT
+                    const fTs = 0.25 / Math.pow(Math.log10(es / (3.7 * Ds)), 2);
+                    const sumsS = getAccessoriesSum('c1-acc-suc-list');
+                    const Ks = sumsS.sumK + sumsS.sumLeD * fTs;
+                    
+                    const As=Math.PI*Ds**2/4, vs=Q/As, Res=(vs*Ds)/nu;
+                    const fs=0.25/Math.pow(Math.log10((es/(3.7*Ds))+(5.74/Math.pow(Res,0.9))),2); // Swamee-Jain completo
                     const hLs_fric = (fs*(Ls/Ds))*(vs**2/(2*g));
                     const hLs_acc = Ks*(vs**2/(2*g));
                     const hLs = hLs_fric + hLs_acc;
 
-                    const Ad=Math.PI*Dd**2/4, vd=Q/Ad, Red=(vd*Dd)/nu, fd=0.25/Math.pow(Math.log10((ed/(3.7*Dd))+(5.74/Math.pow(Red,0.9))),2);
+                    // Descarga - Cálculo del K total dinámico basado en fT
+                    const fTd = 0.25 / Math.pow(Math.log10(ed / (3.7 * Dd)), 2);
+                    const sumsD = getAccessoriesSum('c1-acc-dis-list');
+                    const Kd = sumsD.sumK + sumsD.sumLeD * fTd;
+
+                    const Ad=Math.PI*Dd**2/4, vd=Q/Ad, Red=(vd*Dd)/nu;
+                    const fd=0.25/Math.pow(Math.log10((ed/(3.7*Dd))+(5.74/Math.pow(Red,0.9))),2); // Swamee-Jain completo
                     const hLd_fric = (fd*(Ld/Dd))*(vd**2/(2*g));
                     const hLd_acc = Kd*(vd**2/(2*g));
                     const hLd = hLd_fric + hLd_acc;
@@ -1242,7 +1256,6 @@
                     document.getElementById('res-c1-hls-acc').innerText = hLs_acc.toFixed(2)+" m";
                     document.getElementById('res-c1-hld-fric').innerText = hLd_fric.toFixed(2)+" m";
                     document.getElementById('res-c1-hld-acc').innerText = hLd_acc.toFixed(2)+" m";
-
                     
                     const analysisDiv = document.getElementById('c1-analysis');
                     let analysisHTML = `<div class="analysis-title"><i class="fa-solid fa-microscope"></i> Análisis Técnico</div>`;
@@ -1254,19 +1267,23 @@
 
                     document.getElementById('res-box-class1').classList.remove('hidden');
                     
-                    // Draw Diagram
                     const ctx = document.getElementById('canvas-class1').getContext('2d');
                     drawSystemClass1(ctx, p1/1000, z1, z2, p2/1000, Ls, Ds, Ld, Dd);
                 }
 
                 // CLASE II
                 if(currentSection==='class2') {
-                    const L=parseFloat(document.getElementById('c2-l').value), D=getVal('c2-d'), e=parseFloat(document.getElementById('c2-mat').value), K=getAccessoriesK('c2-acc-list');
+                    const L=parseFloat(document.getElementById('c2-l').value), D=getVal('c2-d'), e=parseFloat(document.getElementById('c2-mat').value);
                     const p1=getVal('c2-p1')*1000, p2=getVal('c2-p2')*1000;
                     const z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0;
                     const ha=((p1-p2)/(rho*g))+(z1-z2)+hp;
                     if(ha<=0) throw "Energía disponible insuficiente (<= 0)";
                     
+                    // Para Clase 2 el Diámetro es conocido. Calculamos fT y K total una sola vez.
+                    const fT = 0.25 / Math.pow(Math.log10(e / (3.7 * D)), 2);
+                    const sums = getAccessoriesSum('c2-acc-list');
+                    const K = sums.sumK + sums.sumLeD * fT;
+
                     let v=1, f=0.02, iter=0; 
                     for(let i=0;i<100;i++){ 
                         iter++;
@@ -1300,18 +1317,25 @@
                     const Q=getVal('c3-q'), L=parseFloat(document.getElementById('c3-l').value), e=parseFloat(document.getElementById('c3-eps').value), std=document.getElementById('c3-std-type').value;
                     const p1=getVal('c3-p1')*1000, p2=getVal('c3-p2')*1000;
                     const z1=parseFloat(document.getElementById('c3-z1').value), z2=parseFloat(document.getElementById('c3-z2').value);
-                    const K = getAccessoriesK('c3-acc-list'); 
                     const hl=((p1-p2)/(rho*g))+(z1-z2);
                     if(hl<=0) throw "Pérdida disponible <= 0. Revise presiones.";
                     
+                    const sums = getAccessoriesSum('c3-acc-list');
+
                     let low = 0.001; let high = 5.0; let D_final = 0;
                     for(let i=0; i<60; i++) {
                         let mid = (low + high) / 2;
+                        
+                        // Recalculo iterativo riguroso de fT y K con el diámetro supuesto
+                        let fT = 0.25 / Math.pow(Math.log10(e / (3.7 * mid)), 2);
+                        let K_local = sums.sumK + sums.sumLeD * fT;
+
                         let A = Math.PI * mid**2 / 4;
                         let v = Q / A;
                         let Re = (v * mid) / nu;
-                        let f = 0.25 / Math.pow(Math.log10((e/(3.7*mid)) + (5.74/Math.pow(Re, 0.9))), 2);
-                        let hL_calc = (f * (L/mid) + K) * (v**2 / (2*g));
+                        let f = 0.25 / Math.pow(Math.log10((e/(3.7*mid)) + (5.74/Math.pow(Re, 0.9))), 2); // Factor de la tubería
+                        
+                        let hL_calc = (f * (L/mid) + K_local) * (v**2 / (2*g));
                         if (hL_calc > hl) { low = mid; } else { high = mid; }
                     }
                     D_final = high;
@@ -1341,7 +1365,6 @@
                     
                     const analysisDiv = document.getElementById('c3-analysis');
                     let analysisHTML = `<div class="analysis-title"><i class="fa-solid fa-lightbulb"></i> Recomendaciones de Diseño</div>`;
-                    if (K > 5.0) analysisHTML += `<div class="mb-1"><span class="rec-tag text-yellow-300">Pérdidas</span>Se detectaron altas pérdidas locales (K alto). Considere usar <b>Codos de Radio Largo</b> o <b>Válvulas de Compuerta</b> en lugar de Globo para reducir el diámetro necesario.</div>`;
                     if (D_final < 0.05) analysisHTML += `<div class="mb-1"><span class="rec-tag">Material</span>Para diámetros pequeños (< 2"), el <b>Cobre Tipo K</b> o <b>PVC RDE</b> son opciones comunes y económicas. <span class="price-tag">$$</span></div>`;
                     else if (p1 > 2000000) analysisHTML += `<div class="mb-1"><span class="rec-tag">Presión</span>Alta presión detectada. Se recomienda <b>Acero al Carbón Cédula 80</b> o superior. <span class="price-tag">$$$</span></div>`;
                     else analysisHTML += `<div class="mb-1"><span class="rec-tag">Material</span>Para diámetros medios/grandes, el <b>Acero Cédula 40</b> es el estándar industrial balanceado. <span class="price-tag">$$</span></div>`;
@@ -1362,33 +1385,38 @@
                     const L=parseFloat(document.getElementById('npsh-l').value);
                     const D=getVal('npsh-d');
                     const e=parseFloat(document.getElementById('npsh-mat').value);
-                    const K=getAccessoriesK('npsh-acc-list');
                     const pv=getVal('pv')*1000;
                     const patm=getVal('patm')*1000;
                     const npsh_req = parseFloat(document.getElementById('npsh-req').value);
                     const safety_factor = parseFloat(document.getElementById('npsh-safety').value);
 
                     // Calc NPSHa Current
+                    const gamma = rho * g;
+                    const fT = 0.25 / Math.pow(Math.log10(e / (3.7 * D)), 2);
+                    const sums = getAccessoriesSum('npsh-acc-list');
+                    const K = sums.sumK + sums.sumLeD * fT;
+
                     const A = Math.PI * D**2 / 4;
                     const v = Q/A;
                     const Re = (v*D)/nu;
                     const f = 0.25 / Math.pow(Math.log10((e/(3.7*D)) + (5.74/Math.pow(Re, 0.9))), 2);
-                    const hf = (f*(L/D) + K) * (v**2 / (2*g));
-                    const gamma = rho * g;
-                    const h_press = (patm + p_tank - pv) / gamma;
-                    const h_elev = za - zb;
-                    const npsha = h_press + h_elev - hf;
+                    
+                    const h_abs = (patm + p_tank) / gamma; 
+                    const h_vp = pv / gamma;               
+                    const h_elev = za - zb;                
+                    const hf = (f*(L/D) + K) * (v**2 / (2*g)); 
+                    
+                    const npsha = h_abs + h_elev - h_vp - hf;
 
-                    // Display Current Results
                     const resMain = document.getElementById('res-npsh-main');
                     const status = document.getElementById('npsh-status');
                     const target_npsh = npsh_req * safety_factor;
                     
                     resMain.innerText = npsha.toFixed(3) + " m";
-                    document.getElementById('res-npsh-hatm').innerText = (patm/gamma).toFixed(2)+" m";
+                    document.getElementById('res-npsh-habs').innerText = h_abs.toFixed(3)+" m";
                     document.getElementById('res-npsh-z').innerText = h_elev.toFixed(2)+" m";
                     document.getElementById('res-npsh-hl').innerText = hf.toFixed(3)+" m";
-                    document.getElementById('res-npsh-hvp').innerText = (pv/gamma).toFixed(3)+" m";
+                    document.getElementById('res-npsh-hvp').innerText = h_vp.toFixed(3)+" m";
                     document.getElementById('npsh-target-val').innerText = target_npsh.toFixed(2) + " m";
 
                     // Risk Logic
@@ -1403,31 +1431,29 @@
                         status.className = "text-sm font-bold uppercase tracking-wide text-red-500";
                         document.getElementById('npsh-opt-panel').classList.remove('hidden');
 
-                        // Optimization Logic
                         const deficit = target_npsh - npsha;
                         let proposalsHTML = "";
 
-                        // Proposal 1: Elevation (Z)
                         const new_za = za + deficit;
                         proposalsHTML += `<div class="opt-row"><div><div class="opt-label">1. Elevar Tanque</div><div class="text-[10px] text-slate-400">Aumentar nivel mínimo de succión.</div></div><div class="text-right"><div class="opt-val">Nivel: ${new_za.toFixed(2)} m</div><div class="opt-cost">$ Operativo</div></div></div>`;
 
-                        // Proposal 2: Pressure (P)
-                        const p_needed = deficit * gamma; // Pa
+                        const p_needed = deficit * gamma; 
                         const new_p_tank_kpa = (p_tank + p_needed) / 1000;
                         proposalsHTML += `<div class="opt-row"><div><div class="opt-label">2. Presurizar Tanque</div><div class="text-[10px] text-slate-400">Inertizar o sellar tanque.</div></div><div class="text-right"><div class="opt-val">P. Man: ${new_p_tank_kpa.toFixed(1)} kPa</div><div class="opt-cost">$$$$ Equipo</div></div></div>`;
 
-                        // Proposal 3: Diameter (D) - Iterative
                         let found_D = false;
                         for(let pipe of pipeStandards['s40']) {
                             if(pipe.di > D) {
-                                // Test this diameter
                                 const D_new = pipe.di;
+                                const fT_new = 0.25 / Math.pow(Math.log10(e / (3.7 * D_new)), 2);
+                                const K_new = sums.sumK + sums.sumLeD * fT_new;
+
                                 const A_new = Math.PI * D_new**2 / 4;
                                 const v_new = Q/A_new;
                                 const Re_new = (v_new*D_new)/nu;
                                 const f_new = 0.25 / Math.pow(Math.log10((e/(3.7*D_new)) + (5.74/Math.pow(Re_new, 0.9))), 2);
-                                const hf_new = (f_new*(L/D_new) + K) * (v_new**2 / (2*g)); 
-                                const npsha_new = h_press + h_elev - hf_new;
+                                const hf_new = (f_new*(L/D_new) + K_new) * (v_new**2 / (2*g)); 
+                                const npsha_new = h_abs + h_elev - h_vp - hf_new;
                                 
                                 if(npsha_new >= target_npsh) {
                                     proposalsHTML += `<div class="opt-row"><div><div class="opt-label">3. Aumentar Diámetro</div><div class="text-[10px] text-slate-400">Reducir pérdidas por fricción.</div></div><div class="text-right"><div class="opt-val">Ø: ${pipe.nom}</div><div class="text-[9px] text-emerald-400/70">NPSHa: ${npsha_new.toFixed(2)}m</div><div class="opt-cost">$$ Material</div></div></div>`;
@@ -1449,7 +1475,6 @@
                     
                     document.getElementById('res-box-npsh').classList.remove('hidden');
                     
-                    // Draw NPSH Diagram
                     const ctx = document.getElementById('canvas-npsh').getContext('2d');
                     drawSystemNPSH(ctx, za, zb, L, D, p_tank/1000);
                 }
@@ -1459,8 +1484,8 @@
             }
         }
         
-        loadFluid();
-        populateStdSelectors(); // Run once on load to fill dropdowns
+        // Inicializar datos
+        initDefaults();
     </script>
 </body>
 </html>

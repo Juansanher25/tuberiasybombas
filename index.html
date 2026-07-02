@@ -234,7 +234,10 @@
                     </div>
 
                     <div class="mb-10 rounded-xl overflow-hidden shadow-2xl border-4 border-white mx-auto max-w-xl transform hover:scale-[1.02] transition duration-500">
-                        <img src="https://github.com/Juansanher25/tuberiasybombas/blob/main/istockphoto-1353917402-612x612.jpg?raw=true" alt="Diagrama de Tuberías Industrial" class="w-full h-auto object-cover">
+                        <!-- Imagen estática a modo de ejemplo -->
+                        <div class="bg-slate-800 h-64 w-full flex items-center justify-center">
+                            <i class="fa-solid fa-diagram-project text-6xl text-slate-500"></i>
+                        </div>
                         <div class="bg-slate-900 text-slate-300 text-[10px] p-2 text-right">Esquema de Referencia: Sistemas en Serie</div>
                     </div>
 
@@ -351,12 +354,20 @@
                             <div id="pipe-suction" class="p-6 space-y-5 flex-1">
                                 <div class="grid grid-cols-2 gap-5">
                                     <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c1-l-suc" value="5" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                    <div class="input-group col-span-2"><label>Material</label><select id="c1-mat-suc" class="input-std w-full"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option></select></div>
+                                    <div class="input-group col-span-2">
+                                        <label>Material</label>
+                                        <select id="c1-mat-suc" class="input-std w-full" onchange="updateDNSelect('c1-mat-suc', 'c1-dn-suc', 'c1-label-dn-suc')">
+                                            <option value="s40" data-eps="4.6e-5" selected>Acero Comercial (Sch 40)</option>
+                                            <option value="s80" data-eps="4.6e-5">Acero Comercial (Sch 80)</option>
+                                            <option value="pvc" data-eps="1.5e-6">Tubería Plástica PVC</option>
+                                            <option value="copperK" data-eps="1.5e-6">Tubería Cobre Tipo K</option>
+                                        </select>
+                                    </div>
                                     <div class="input-group col-span-2">
                                         <div class="flex gap-2">
                                             <div class="flex-1">
-                                                <label class="text-blue-600">DN (Acero Sch 40)</label>
-                                                <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c1-d-suc')">
+                                                <label id="c1-label-dn-suc" class="text-blue-600">DN (Acero Sch 40)</label>
+                                                <select id="c1-dn-suc" class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c1-d-suc')">
                                                     <option value="-">- Manual -</option>
                                                 </select>
                                             </div>
@@ -383,12 +394,20 @@
                             <div id="pipe-discharge" class="p-6 space-y-5 hidden flex-1">
                                 <div class="grid grid-cols-2 gap-5">
                                     <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c1-l-dis" value="20" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                    <div class="input-group col-span-2"><label>Material</label><select id="c1-mat-dis" class="input-std w-full"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option></select></div>
+                                    <div class="input-group col-span-2">
+                                        <label>Material</label>
+                                        <select id="c1-mat-dis" class="input-std w-full" onchange="updateDNSelect('c1-mat-dis', 'c1-dn-dis', 'c1-label-dn-dis')">
+                                            <option value="s40" data-eps="4.6e-5" selected>Acero Comercial (Sch 40)</option>
+                                            <option value="s80" data-eps="4.6e-5">Acero Comercial (Sch 80)</option>
+                                            <option value="pvc" data-eps="1.5e-6">Tubería Plástica PVC</option>
+                                            <option value="copperK" data-eps="1.5e-6">Tubería Cobre Tipo K</option>
+                                        </select>
+                                    </div>
                                     <div class="input-group col-span-2">
                                         <div class="flex gap-2">
                                             <div class="flex-1">
-                                                <label class="text-blue-600">DN (Acero Sch 40)</label>
-                                                <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c1-d-dis')">
+                                                <label id="c1-label-dn-dis" class="text-blue-600">DN (Acero Sch 40)</label>
+                                                <select id="c1-dn-dis" class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c1-d-dis')">
                                                     <option value="-">- Manual -</option>
                                                 </select>
                                             </div>
@@ -493,12 +512,24 @@
                             <h4 class="text-xs font-bold text-slate-400 uppercase border-b pb-2">Tubería</h4>
                             <div class="grid grid-cols-2 gap-5">
                                 <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c2-l" value="100" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                <div class="input-group col-span-2"><label>Material</label><div class="relative w-full"><select id="c2-mat" class="input-std w-full appearance-none pr-8"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option><option value="2.4e-4">Hierro Galvanizado</option></select><div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div></div></div>
+                                <div class="input-group col-span-2">
+                                    <label>Material</label>
+                                    <div class="relative w-full">
+                                        <select id="c2-mat" class="input-std w-full appearance-none pr-8" onchange="updateDNSelect('c2-mat', 'c2-dn', 'c2-label-dn')">
+                                            <option value="s40" data-eps="4.6e-5" selected>Acero Comercial (Sch 40)</option>
+                                            <option value="s80" data-eps="4.6e-5">Acero Comercial (Sch 80)</option>
+                                            <option value="pvc" data-eps="1.5e-6">Tubería Plástica PVC</option>
+                                            <option value="copperK" data-eps="1.5e-6">Tubería Cobre Tipo K</option>
+                                            <option value="hg" data-eps="2.4e-4">Hierro Galvanizado</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div>
+                                    </div>
+                                </div>
                                 <div class="input-group col-span-2">
                                     <div class="flex gap-2">
                                         <div class="flex-1">
-                                            <label class="text-indigo-600">DN (Acero Sch 40)</label>
-                                            <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c2-d')">
+                                            <label id="c2-label-dn" class="text-indigo-600">DN (Acero Sch 40)</label>
+                                            <select id="c2-dn" class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'c2-d')">
                                                 <option value="-">- Manual -</option>
                                             </select>
                                         </div>
@@ -610,7 +641,19 @@
                             <h4 class="text-xs font-bold text-slate-400 uppercase border-b pb-2">Parámetros de Tubería</h4>
                             <div class="grid grid-cols-1 gap-5">
                                 <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="c3-l" value="30" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                <div class="input-group"><label>Estándar</label><div class="relative w-full"><select id="c3-std-type" class="input-std w-full appearance-none pr-8"><option value="s40" selected>Acero Cédula 40 ($$)</option><option value="s80">Acero Cédula 80 ($$$)</option><option value="copperK">Cobre Tipo K ($$$)</option><option value="none">Sólo Teórico</option></select><div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div></div></div>
+                                <div class="input-group">
+                                    <label>Estándar</label>
+                                    <div class="relative w-full">
+                                        <select id="c3-std-type" class="input-std w-full appearance-none pr-8">
+                                            <option value="s40" selected>Acero Cédula 40 ($$)</option>
+                                            <option value="s80">Acero Cédula 80 ($$$)</option>
+                                            <option value="pvc">PVC 16 bar ($$)</option>
+                                            <option value="copperK">Cobre Tipo K ($$$)</option>
+                                            <option value="none">Sólo Teórico</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div>
+                                    </div>
+                                </div>
                                 <div class="input-group"><label>Rugosidad (ε)</label><div class="input-wrapper"><input type="number" id="c3-eps" value="1.5e-6" step="1e-6" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
                             </div>
                             <!-- SECCIÓN DE ACCESORIOS -->
@@ -697,12 +740,23 @@
                             <h4 class="text-xs font-bold text-slate-400 uppercase border-b pb-2">Línea de Succión</h4>
                             <div class="grid grid-cols-2 gap-5">
                                 <div class="input-group"><label>Longitud</label><div class="input-wrapper"><input type="number" id="npsh-l" value="4" class="input-std has-badge"><span class="unit-badge">m</span></div></div>
-                                <div class="input-group col-span-2"><label>Material</label><div class="relative w-full"><select id="npsh-mat" class="input-std w-full appearance-none pr-8"><option value="4.6e-5">Acero Comercial (Sch 40)</option><option value="1.5e-6">Cobre/Plástico</option></select><div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div></div></div>
+                                <div class="input-group col-span-2">
+                                    <label>Material</label>
+                                    <div class="relative w-full">
+                                        <select id="npsh-mat" class="input-std w-full appearance-none pr-8" onchange="updateDNSelect('npsh-mat', 'npsh-dn', 'npsh-label-dn')">
+                                            <option value="s40" data-eps="4.6e-5" selected>Acero Comercial (Sch 40)</option>
+                                            <option value="s80" data-eps="4.6e-5">Acero Comercial (Sch 80)</option>
+                                            <option value="pvc" data-eps="1.5e-6">Tubería Plástica PVC</option>
+                                            <option value="copperK" data-eps="1.5e-6">Tubería Cobre Tipo K</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"><i class="fa-solid fa-chevron-down text-xs"></i></div>
+                                    </div>
+                                </div>
                                 <div class="input-group col-span-2">
                                     <div class="flex gap-2">
                                         <div class="flex-1">
-                                            <label class="text-orange-600">DN (Acero Sch 40)</label>
-                                            <select class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'npsh-d')">
+                                            <label id="npsh-label-dn" class="text-orange-600">DN (Acero Sch 40)</label>
+                                            <select id="npsh-dn" class="input-std w-full text-xs" onchange="applyStdDiameter(this, 'npsh-d')">
                                                 <option value="-">- Manual -</option>
                                             </select>
                                         </div>
@@ -780,9 +834,7 @@
             'file_fluid': { rho: 674, mu: 3e-5, pv: 62.1 } 
         };
         
-        // Base de Datos de Accesorios: 
-        // Si isLeD es true, val representa (Le/D). K local = fT * (Le/D).
-        // Si isLeD es false, val representa K directo (Entradas/Salidas tanque).
+        // Base de Datos de Accesorios
         const accessoriesDB = [
             { name: "Codo 90° Estándar (Roscado)", val: 50, isLeD: true },
             { name: "Codo 90° Estándar (Bridado/Soldado)", val: 30, isLeD: true },
@@ -803,10 +855,20 @@
             { name: "Salida (Pérdida total)", val: 1.0, isLeD: false }
         ];
 
+        // Base de Datos de Tuberías Estándar incorporada del adjunto
         const pipeStandards = {
-            's40': [{nom: '1/2"', di: 0.0158}, {nom: '3/4"', di: 0.0209}, {nom: '1"', di: 0.0266}, {nom: '1 1/4"', di: 0.0351}, {nom: '1 1/2"', di: 0.0409}, {nom: '2"', di: 0.0525}, {nom: '2 1/2"', di: 0.0627}, {nom: '3"', di: 0.0779}, {nom: '4"', di: 0.1023}, {nom: '5"', di: 0.1282}, {nom: '6"', di: 0.1541}, {nom: '8"', di: 0.2027}, {nom: '10"', di: 0.2545}],
-            's80': [{nom: '1/2"', di: 0.0139}, {nom: '3/4"', di: 0.0189}, {nom: '1"', di: 0.0243}, {nom: '1 1/4"', di: 0.0325}, {nom: '1 1/2"', di: 0.0381}, {nom: '2"', di: 0.0493}, {nom: '2 1/2"', di: 0.0590}, {nom: '3"', di: 0.0737}, {nom: '4"', di: 0.0972}, {nom: '5"', di: 0.1223}, {nom: '6"', di: 0.1463}],
-            'copperK': [{nom: '1/2"', di: 0.0134}, {nom: '3/4"', di: 0.0199}, {nom: '1"', di: 0.0260}, {nom: '1 1/4"', di: 0.0321}, {nom: '1 1/2"', di: 0.0382}, {nom: '2"', di: 0.0504}]
+            's40': [
+                {nom: '1/2"', di: 0.0158}, {nom: '3/4"', di: 0.0209}, {nom: '1"', di: 0.0266}, {nom: '1 1/4"', di: 0.0351}, {nom: '1 1/2"', di: 0.0409}, {nom: '2"', di: 0.0525}, {nom: '2 1/2"', di: 0.0627}, {nom: '3"', di: 0.0779}, {nom: '4"', di: 0.1023}, {nom: '5"', di: 0.1282}, {nom: '6"', di: 0.1541}, {nom: '8"', di: 0.2027}, {nom: '10"', di: 0.2545}
+            ],
+            's80': [
+                {nom: '1/8"', di: 0.0055}, {nom: '1/4"', di: 0.0077}, {nom: '3/8"', di: 0.0107}, {nom: '1/2"', di: 0.0139}, {nom: '3/4"', di: 0.0188}, {nom: '1"', di: 0.0243}, {nom: '1 1/4"', di: 0.0325}, {nom: '1 1/2"', di: 0.0381}, {nom: '2"', di: 0.0493}, {nom: '2 1/2"', di: 0.0590}, {nom: '3"', di: 0.0737}, {nom: '3 1/2"', di: 0.0854}, {nom: '4"', di: 0.0972}, {nom: '5"', di: 0.1223}, {nom: '6"', di: 0.1463}, {nom: '8"', di: 0.1937}, {nom: '10"', di: 0.2429}, {nom: '12"', di: 0.289}, {nom: '14"', di: 0.3175}, {nom: '16"', di: 1.117}, {nom: '18"', di: 1.418}, {nom: '20"', di: 1.755}
+            ],
+            'pvc': [
+                {nom: '16 mm', di: 0.013}, {nom: '20 mm', di: 0.017}, {nom: '25 mm', di: 0.0212}, {nom: '32 mm', di: 0.0272}, {nom: '40 mm', di: 0.034}, {nom: '50 mm', di: 0.0426}, {nom: '63 mm', di: 0.0536}, {nom: '75 mm', di: 0.0638}, {nom: '90 mm', di: 0.0766}, {nom: '125 mm', di: 0.1102}, {nom: '160 mm', di: 0.141}, {nom: '200 mm', di: 0.1762}, {nom: '250 mm', di: 0.2204}
+            ],
+            'copperK': [
+                {nom: '1/8"', di: 0.00457}, {nom: '1/4"', di: 0.00704}, {nom: '3/8"', di: 0.0102}, {nom: '1/2"', di: 0.0134}, {nom: '5/8"', di: 0.0166}, {nom: '3/4"', di: 0.0189}, {nom: '1"', di: 0.0253}, {nom: '1 1/4"', di: 0.0316}, {nom: '1 1/2"', di: 0.0376}, {nom: '2"', di: 0.0498}, {nom: '2 1/2"', di: 0.0618}, {nom: '3"', di: 0.0738}, {nom: '3 1/2"', di: 0.0859}, {nom: '4"', di: 0.0979}, {nom: '5"', di: 0.122}, {nom: '6"', di: 0.1458}, {nom: '8"', di: 0.1926}, {nom: '10"', di: 0.240}, {nom: '12"', di: 0.2874}
+            ]
         };
 
         function initDefaults() {
@@ -902,7 +964,6 @@
             const sel = document.getElementById('fluid-preset'); return sel.options[sel.selectedIndex].text;
         }
 
-        // --- NEW UNIT CONVERSION HELPER ---
         function getVal(id) {
             const inputEl = document.getElementById(id);
             if (!inputEl) return 0;
@@ -910,6 +971,12 @@
             const unitEl = document.getElementById('unit-' + id);
             const factor = unitEl ? parseFloat(unitEl.value) : 1;
             return val * factor;
+        }
+
+        // Obtiene la rugosidad basándose en el selector de material
+        function getEps(selectId) {
+            const el = document.getElementById(selectId);
+            return parseFloat(el.options[el.selectedIndex].getAttribute('data-eps') || el.value);
         }
 
         function togglePumpInput() {
@@ -1037,10 +1104,35 @@
             }
         }
         
+        // Actualiza las opciones del DN basado en el Material seleccionado
+        function updateDNSelect(matSelectId, dnSelectId, labelId) {
+            const selMat = document.getElementById(matSelectId);
+            const selDn = document.getElementById(dnSelectId);
+            const labelDn = document.getElementById(labelId);
+            
+            const matKey = selMat.value; 
+            const matName = selMat.options[selMat.selectedIndex].text;
+            
+            // Actualizar Label para reflejar la selección actual
+            if(labelDn) {
+                let shortName = matName.replace('Tubería ', '').replace('Comercial ', '').replace('Plástica ', '');
+                labelDn.innerText = `DN (${shortName})`;
+            }
+            
+            // Llenar opciones
+            let optionsHTML = '<option value="-">- Manual -</option>';
+            if(pipeStandards[matKey]) {
+                optionsHTML += pipeStandards[matKey].map(p => `<option value="${p.di}">${p.nom} (${(p.di*1000).toFixed(1)}mm)</option>`).join('');
+            }
+            
+            if(selDn) selDn.innerHTML = optionsHTML;
+        }
+
         function populateStdSelectors() {
-            const optionsHTML = '<option value="-">- Manual -</option>' + 
-                pipeStandards.s40.map(p => `<option value="${p.di}">${p.nom} (${(p.di*1000).toFixed(1)}mm)</option>`).join('');
-            document.querySelectorAll('select[onchange^="applyStdDiameter"]').forEach(sel => { sel.innerHTML = optionsHTML; });
+            updateDNSelect('c1-mat-suc', 'c1-dn-suc', 'c1-label-dn-suc');
+            updateDNSelect('c1-mat-dis', 'c1-dn-dis', 'c1-label-dn-dis');
+            updateDNSelect('c2-mat', 'c2-dn', 'c2-label-dn');
+            updateDNSelect('npsh-mat', 'npsh-dn', 'npsh-label-dn');
         }
 
         // --- DRAWING ENGINE ---
@@ -1218,27 +1310,29 @@
                     const Q=getVal('c1-q'), eff=parseFloat(document.getElementById('c1-eff').value)/100;
                     const p1=getVal('c1-p1')*1000, p2=getVal('c1-p2')*1000;
                     const z1=parseFloat(document.getElementById('c1-z1').value), z2=parseFloat(document.getElementById('c1-z2').value);
-                    const Ls=parseFloat(document.getElementById('c1-l-suc').value), Ds=getVal('c1-d-suc'), es=parseFloat(document.getElementById('c1-mat-suc').value);
-                    const Ld=parseFloat(document.getElementById('c1-l-dis').value), Dd=getVal('c1-d-dis'), ed=parseFloat(document.getElementById('c1-mat-dis').value);
+                    const Ls=parseFloat(document.getElementById('c1-l-suc').value), Ds=getVal('c1-d-suc');
+                    const es=getEps('c1-mat-suc'); 
+                    const Ld=parseFloat(document.getElementById('c1-l-dis').value), Dd=getVal('c1-d-dis');
+                    const ed=getEps('c1-mat-dis');
                     
-                    // Succión - Cálculo del K total dinámico basado en fT
+                    // Succión
                     const fTs = 0.25 / Math.pow(Math.log10(es / (3.7 * Ds)), 2);
                     const sumsS = getAccessoriesSum('c1-acc-suc-list');
                     const Ks = sumsS.sumK + sumsS.sumLeD * fTs;
                     
                     const As=Math.PI*Ds**2/4, vs=Q/As, Res=(vs*Ds)/nu;
-                    const fs=0.25/Math.pow(Math.log10((es/(3.7*Ds))+(5.74/Math.pow(Res,0.9))),2); // Swamee-Jain completo
+                    const fs=0.25/Math.pow(Math.log10((es/(3.7*Ds))+(5.74/Math.pow(Res,0.9))),2);
                     const hLs_fric = (fs*(Ls/Ds))*(vs**2/(2*g));
                     const hLs_acc = Ks*(vs**2/(2*g));
                     const hLs = hLs_fric + hLs_acc;
 
-                    // Descarga - Cálculo del K total dinámico basado en fT
+                    // Descarga
                     const fTd = 0.25 / Math.pow(Math.log10(ed / (3.7 * Dd)), 2);
                     const sumsD = getAccessoriesSum('c1-acc-dis-list');
                     const Kd = sumsD.sumK + sumsD.sumLeD * fTd;
 
                     const Ad=Math.PI*Dd**2/4, vd=Q/Ad, Red=(vd*Dd)/nu;
-                    const fd=0.25/Math.pow(Math.log10((ed/(3.7*Dd))+(5.74/Math.pow(Red,0.9))),2); // Swamee-Jain completo
+                    const fd=0.25/Math.pow(Math.log10((ed/(3.7*Dd))+(5.74/Math.pow(Red,0.9))),2);
                     const hLd_fric = (fd*(Ld/Dd))*(vd**2/(2*g));
                     const hLd_acc = Kd*(vd**2/(2*g));
                     const hLd = hLd_fric + hLd_acc;
@@ -1273,13 +1367,13 @@
 
                 // CLASE II
                 if(currentSection==='class2') {
-                    const L=parseFloat(document.getElementById('c2-l').value), D=getVal('c2-d'), e=parseFloat(document.getElementById('c2-mat').value);
+                    const L=parseFloat(document.getElementById('c2-l').value), D=getVal('c2-d');
+                    const e=getEps('c2-mat');
                     const p1=getVal('c2-p1')*1000, p2=getVal('c2-p2')*1000;
                     const z1=parseFloat(document.getElementById('c2-z1').value), z2=parseFloat(document.getElementById('c2-z2').value), hp=parseFloat(document.getElementById('c2-pump-head').value)||0;
                     const ha=((p1-p2)/(rho*g))+(z1-z2)+hp;
                     if(ha<=0) throw "Energía disponible insuficiente (<= 0)";
                     
-                    // Para Clase 2 el Diámetro es conocido. Calculamos fT y K total una sola vez.
                     const fT = 0.25 / Math.pow(Math.log10(e / (3.7 * D)), 2);
                     const sums = getAccessoriesSum('c2-acc-list');
                     const K = sums.sumK + sums.sumLeD * fT;
@@ -1326,14 +1420,13 @@
                     for(let i=0; i<60; i++) {
                         let mid = (low + high) / 2;
                         
-                        // Recalculo iterativo riguroso de fT y K con el diámetro supuesto
                         let fT = 0.25 / Math.pow(Math.log10(e / (3.7 * mid)), 2);
                         let K_local = sums.sumK + sums.sumLeD * fT;
 
                         let A = Math.PI * mid**2 / 4;
                         let v = Q / A;
                         let Re = (v * mid) / nu;
-                        let f = 0.25 / Math.pow(Math.log10((e/(3.7*mid)) + (5.74/Math.pow(Re, 0.9))), 2); // Factor de la tubería
+                        let f = 0.25 / Math.pow(Math.log10((e/(3.7*mid)) + (5.74/Math.pow(Re, 0.9))), 2); 
                         
                         let hL_calc = (f * (L/mid) + K_local) * (v**2 / (2*g));
                         if (hL_calc > hl) { low = mid; } else { high = mid; }
@@ -1384,7 +1477,7 @@
                     const zb=parseFloat(document.getElementById('npsh-zb').value);
                     const L=parseFloat(document.getElementById('npsh-l').value);
                     const D=getVal('npsh-d');
-                    const e=parseFloat(document.getElementById('npsh-mat').value);
+                    const e=getEps('npsh-mat');
                     const pv=getVal('pv')*1000;
                     const patm=getVal('patm')*1000;
                     const npsh_req = parseFloat(document.getElementById('npsh-req').value);
@@ -1442,7 +1535,10 @@
                         proposalsHTML += `<div class="opt-row"><div><div class="opt-label">2. Presurizar Tanque</div><div class="text-[10px] text-slate-400">Inertizar o sellar tanque.</div></div><div class="text-right"><div class="opt-val">P. Man: ${new_p_tank_kpa.toFixed(1)} kPa</div><div class="opt-cost">$$$$ Equipo</div></div></div>`;
 
                         let found_D = false;
-                        for(let pipe of pipeStandards['s40']) {
+                        const selMatNpsh = document.getElementById('npsh-mat').value;
+                        const stdToUse = pipeStandards[selMatNpsh] ? selMatNpsh : 's40'; 
+
+                        for(let pipe of pipeStandards[stdToUse]) {
                             if(pipe.di > D) {
                                 const D_new = pipe.di;
                                 const fT_new = 0.25 / Math.pow(Math.log10(e / (3.7 * D_new)), 2);
